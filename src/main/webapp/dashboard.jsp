@@ -51,7 +51,8 @@
 </div>
 <div class="container d-flex justify-content-center border-primary">
     <button type="button" class="btn btn-dark" onclick="openCreateTaskModal()">Create New Task</button>
-    <button type="button" class="btn btn-primary" onclick="window.location.href='createTask.jsp'">Create New Task</button>
+    <button type="button" class="btn btn-primary" onclick="window.location.href='createTask.jsp'">Create New Task
+    </button>
 </div>
 
 <div class="container d-flex justify-content-center border-primary">
@@ -165,33 +166,57 @@
                 <form id="updateTaskForm" action="UpdateTaskServlet" method="post">
                     <input type="hidden" id="updateTaskId" name="id">
                     <div class="mb-3">
-                        <label for="updateTitleId">Title:</label>
-                        <input type="text" class="form-control" id="updateTitleId" name="title">
+                        <div class="form-group">
+                            <label for="updateTitleId">Title:</label>
+                            <input type="text" class="form-control ${titleError != null ? 'is-invalid' : ''}"
+                                   id="updateTitleId" name="title" value="${title}" aria-describedby="titleError">
+                            <div id="titleError"
+                                 class="invalid-feedback">${titleError != null ? 'Please provide a title' : ''}</div>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="updateDescriptionId" class="form-label">Description:</label>
-                        <input type="text" class="form-control" id="updateDescriptionId" name="description">
+                        <div class="form-group">
+                            <label for="updateDescriptionId" class="form-label">Description:</label>
+                            <input type="text" class="form-control ${descriptionError != null ? 'is-invalid' : ''}"
+                                   id="updateDescriptionId" name="description" value="${description}"
+                                   aria-describedby="descriptionError">
+                            <div id="descriptionError"
+                                 class="invalid-feedback">${descriptionError != null ? 'Please provide a description' : ''}</div>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="updateDuedateId" class="form-label">Due Date:</label>
-                        <input type="date" class="form-control" id="updateDuedateId" name="duedate">
+                        <div class="form-group">
+                            <label for="updateDuedateId" class="form-label">Due Date:</label>
+                            <input type="date" class="form-control ${duedateError != null ? 'is-invalid' : ''}"
+                                   id="updateDuedateId" name="duedate" value="${duedate}"
+                                   aria-describedby="deudateError">
+                            <div id="duedateError"
+                                 class="invalid-feedback">${duedateError != null ? 'Please provide a DeuDate' : ''}</div>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="updateStatusId" class="form-label">Status:</label>
-                        <select class="form-select" id="updateStatusId" name="status">
-                            <option selected disabled>Open this select menu</option>
-                            <option value="pending">pending</option>
-                            <option value="completed">completed</option>
-                        </select>
+                        <div class="form-group">
+                            <label for="updateStatusId" class="form-label">Status:</label>
+                            <select class="form-select" id="updateStatusId" name="status">
+                                <option selected disabled>Open this select menu</option>
+                                <option value="pending">pending</option>
+                                <option value="completed">completed</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="updatePriorityId" class="form-label">Priority:</label>
-                        <select class="form-select" id="updatePriorityId" name="priority">
-                            <option selected disabled>Open this select menu</option>
-                            <option value="high">high</option>
-                            <option value="medium">medium</option>
-                            <option value="low">low</option>
-                        </select>
+                        <div class="form-group">
+                            <label for="updatePriorityId" class="form-label">Priority:</label>
+                            <select class="form-select ${priorityError != null ? 'is-invalid' : ''}"
+                                    id="updatePriorityId" name="priority" aria-describedby="priorityError">
+                                <option selected disabled>Open this select menu</option>
+                                <option value="high">high</option>
+                                <option value="medium">medium</option>
+                                <option value="low">low</option>
+                            </select>
+                            <div id="priorityError"
+                                 class="invalid-feedback">${priorityError != null ? 'Please select a priority' : ''}</div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -223,6 +248,21 @@
     function openCreateTaskModal() {
         let createTaskModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
         createTaskModal.show();
+    }
+</script>
+<script>
+    // Check if the form has validation errors
+    var hasErrors = "${hasErrors}";
+    if (hasErrors) {
+        // Get the form data from the request attributes
+        var id = "${id}";
+        var title = "${title}";
+        var description = "${description}";
+        var duedate = "${duedate}";
+        var status = "${status}";
+        var priority = "${priority}";
+        // Open the modal with the form data
+        openUpdateTaskModal(id, title, description, duedate, status, priority);
     }
 </script>
 <%--<script>--%>

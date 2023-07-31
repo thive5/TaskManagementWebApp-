@@ -33,7 +33,7 @@ public class CreateTaskServlet extends HttpServlet {
         // Get the current user
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        int userId = user.getId();
+//        int userId = user.getId();
 
         // Get the form data
         String title = request.getParameter("title");

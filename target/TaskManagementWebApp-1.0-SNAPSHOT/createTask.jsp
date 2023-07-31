@@ -39,8 +39,8 @@
             <div class="mb-3">
                 <div class="form-group">
                     <label for="duedate" class="form-label">Due Date:</label>
-                    <input type="date" class="form-control ${deudateError != null ? 'is-invalid' : ''}"
-                           id="duedate" name="duedate" value="${deudate}" aria-describedby="deudateError">
+                    <input type="date" class="form-control ${duedateError != null ? 'is-invalid' : ''}"
+                           id="duedate" name="duedate" value="${duedate}" aria-describedby="deudateError">
                     <div id="duedateError"
                          class="invalid-feedback">${duedateError != null ? 'Please provide a DeuDate' : ''}</div>
                 </div>
