@@ -10,4 +10,5 @@ public interface TaskSessionBeanLocal {
     public List<Todotask> getTaskByUser(Integer userId) throws EJBException;
     public void createTask(Todotask task);
     public void updateTask(Todotask task);
+    public void deleteTask(int id);
 }

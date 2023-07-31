@@ -51,8 +51,8 @@
 </div>
 <div class="container d-flex justify-content-center border-primary">
     <button type="button" class="btn btn-dark" onclick="openCreateTaskModal()">Create New Task</button>
-    <button type="button" class="btn btn-primary" onclick="window.location.href='createTask.jsp'">Create New Task
-    </button>
+    <%--    <button type="button" class="btn btn-primary" onclick="window.location.href='createTask.jsp'">Create New Task--%>
+    <%--    </button>--%>
 </div>
 
 <div class="container d-flex justify-content-center border-primary">
@@ -87,7 +87,9 @@
                                     onclick="openUpdateTaskModal(${task.id}, '${task.title}', '${task.description}', '${task.duedate}', '${task.status}', '${task.priority}')">
                                 Update
                             </button>
-                            <button type="button" class="btn btn-danger">Remove</button>
+                            <button type="button" class="btn btn-danger" onclick="openDeleteTaskModal(${task.id})">
+                                Remove
+                            </button>
                             <button type="button" class="btn btn-success">Completed</button>
                         </td>
                     </tr>
@@ -97,32 +99,45 @@
         </c:otherwise>
     </c:choose>
 </div>
+
 <!-- Create Task Modal -->
-<div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+<div class="modal fade" id="createTaskModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="createTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="createTaskModalLabel">Create Task</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet';"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="createTaskForm" action="CreateTaskServlet" method="post">
                     <div class="mb-3">
-                        <label for="title">Title:</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
-                        <div class="error-message">
+                        <div class="form-group">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control ${titleError != null ? 'is-invalid' : ''}"
+                                   id="title" name="title" value="${title}" aria-describedby="titleError">
+                            <div id="titleErrorCreate"
+                                 class="invalid-feedback">${titleError != null ? 'Please provide a title' : ''}</div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description:</label>
-                        <input type="text" class="form-control" id="description" name="description" required>
-                        <div class="error-message">
+                        <div class="form-group">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control ${descriptionError != null ? 'is-invalid' : ''}"
+                                   id="description" name="description" value="${description}"
+                                   aria-describedby="descriptionError">
+                            <div id="descriptionErrorCreate"
+                                 class="invalid-feedback">${descriptionError != null ? 'Please provide a description' : ''}</div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="duedate" class="form-label">Due Date:</label>
-                        <input type="date" class="form-control" id="duedate" name="duedate" required>
-                        <div class="error-message">
+                        <div class="form-group">
+                            <label for="duedate" class="form-label">Due Date:</label>
+                            <input type="date" class="form-control ${duedateError != null ? 'is-invalid' : ''}"
+                                   id="duedate" name="duedate" value="${duedate}" aria-describedby="deudateError">
+                            <div id="duedateErrorCreate"
+                                 class="invalid-feedback">${duedateError != null ? 'Please provide a DeuDate' : ''}</div>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -130,21 +145,22 @@
                         <input type="text" class="form-control" id="status" name="status" value="pending" readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="priority" class="form-label">Priority:</label>
-                        <select class="form-select" id="priority" name="priority" required>
-                            <option selected disabled>Open this select menu</option>
-                            <option value="high">high</option>
-                            <option value="medium">medium</option>
-                            <option value="low">low</option>
-                        </select>
-                        <div class="error-message">
-                            Please select priority
+                        <div class="form-group">
+                            <label for="priority" class="form-label">Priority:</label>
+                            <select class="form-select ${priorityError != null ? 'is-invalid' : ''}"
+                                    id="priority" name="priority" aria-describedby="priorityError">
+                                <option selected disabled>Select Priority</option>
+                                <option value="high">high</option>
+                                <option value="medium">medium</option>
+                                <option value="low">low</option>
+                            </select>
+                            <div id="priorityErrorCreate"
+                                 class="invalid-feedback">${priorityError != null ? 'Please select a priority' : ''}</div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary"
                         onclick="document.getElementById('createTaskForm').submit();">Create Task
                 </button>
@@ -153,14 +169,15 @@
     </div>
 </div>
 
-
 <!-- Update Task Modal -->
-<div class="modal fade" id="updateTaskModal" tabindex="-1" aria-labelledby="updateTaskModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateTaskModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="updateTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="updateTaskModalLabel">Update Task</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet';"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="updateTaskForm" action="UpdateTaskServlet" method="post">
@@ -221,7 +238,6 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary"
                         onclick="document.getElementById('updateTaskForm').submit();">Save changes
                 </button>
@@ -230,6 +246,31 @@
     </div>
 </div>
 
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteTaskModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="deleteTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTaskModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this task?
+                <form id="deleteTaskForm" action="DeleteTaskServlet" method="post">
+                    <input type="hidden" id="deleteTaskId" name="id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <%--                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>--%>
+                <button type="button" class="btn btn-danger"
+                        onclick="document.getElementById('deleteTaskForm').submit();">Delete Task
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
@@ -249,6 +290,12 @@
         let createTaskModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
         createTaskModal.show();
     }
+
+    function openDeleteTaskModal(id){
+        document.getElementById('deleteTaskId').value = id;
+        let deleteTaskModal = new bootstrap.Modal(document.getElementById('deleteTaskModal'));
+        deleteTaskModal.show();
+    }
 </script>
 <script>
     // Check if the form has validation errors
@@ -265,16 +312,26 @@
         openUpdateTaskModal(id, title, description, duedate, status, priority);
     }
 </script>
-<%--<script>--%>
-<%--    <% if (request.getAttribute("errorMessage") != null) { %>--%>
-<%--    let errorMessages = document.getElementsByClassName('error-message');--%>
-<%--    for (let i = 0; i < errorMessages.length; i++) {--%>
-<%--        errorMessages[i].innerText = '<%= request.getAttribute("errorMessage") %>';--%>
-<%--    }--%>
-<%--    openCreateTaskModal();--%>
-<%--    <% } %>--%>
-<%--</script>--%>
-
+<script>
+    // Check if the form has validation errors
+    var createHasErrors = "${createHasErrors}";
+    if (createHasErrors) {
+        // Get the form data from the request attributes
+        var id = "${id}";
+        var title = "${title}";
+        var description = "${description}";
+        var duedate = "${duedate}";
+        var status = "${status}";
+        var priority = "${priority}";
+        // Open the modal with the form data
+        openCreateTaskModal(id, title, description, duedate, status, priority);
+    }
+</script>
+<script>
+    function redirectToDashboard() {
+        window.location.href = 'DashboardServlet';
+    }
+</script>
 
 </body>
 </html>

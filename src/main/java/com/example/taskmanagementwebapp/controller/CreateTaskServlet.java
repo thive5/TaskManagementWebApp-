@@ -33,7 +33,7 @@ public class CreateTaskServlet extends HttpServlet {
         // Get the current user
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-//        int userId = user.getId();
+        int userId = user.getId();
 
         // Get the form data
         String title = request.getParameter("title");
@@ -54,7 +54,13 @@ public class CreateTaskServlet extends HttpServlet {
             request.setAttribute("duedate", duedate);
             request.setAttribute("status", status);
             request.setAttribute("priority", priority);
-            request.getRequestDispatcher("/createTask.jsp").forward(request, response);
+            List<Todotask> tasksList = taskBean.getTaskByUser(userId);
+            request.setAttribute("tasksList", tasksList);
+            // Add a flag to indicate that the form has validation errors
+            request.setAttribute("createHasErrors", true);
+            request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
+            //request.getRequestDispatcher("/createTask.jsp").forward(request, response);
+
         } else {
             // Create the new task
             Todotask newTask = new Todotask();

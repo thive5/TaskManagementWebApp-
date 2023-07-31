@@ -34,4 +34,14 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
         entityManager.merge(task);
         entityManager.flush();
     }
+
+    @Override
+    public void deleteTask(int id) {
+        // Find the task entity with the given ID
+        Todotask task = entityManager.find(Todotask.class, id);
+        // If the task exists, remove it
+        if (task != null) {
+            entityManager.remove(task);
+        }
+    }
 }
