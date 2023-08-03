@@ -56,7 +56,7 @@ public class UpdateTaskServlet extends HttpServlet {
             request.setAttribute("duedate", duedate);
             request.setAttribute("status", status);
             request.setAttribute("priority", priority);
-            List<Todotask> tasksList = taskBean.getTaskByUser(userId);
+            List<Todotask> tasksList = taskBean.getTaskByUser(userId,Integer.MAX_VALUE, 0,"");
             request.setAttribute("tasksList", tasksList);
             // Add a flag to indicate that the form has validation errors
             request.setAttribute("hasErrors", true);

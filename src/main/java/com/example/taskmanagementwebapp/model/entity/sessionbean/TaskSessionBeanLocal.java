@@ -7,8 +7,9 @@ import java.util.List;
 
 @Local
 public interface TaskSessionBeanLocal {
-    public List<Todotask> getTaskByUser(Integer userId) throws EJBException;
+    public List<Todotask> getTaskByUser(Integer userId,int maxResults,int firstResult,String searchKeyword) throws EJBException;
     public void createTask(Todotask task);
     public void updateTask(Todotask task);
     public void deleteTask(int id);
+    public int getTaskCountForUser(int userId); //to get num or pages for user records
 }

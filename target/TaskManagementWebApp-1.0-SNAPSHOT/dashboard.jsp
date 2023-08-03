@@ -25,7 +25,10 @@
             %>
         </div>
         <div class="col-4">
-            <p>Search bar </p>
+            <form action="DashboardServlet" method="get">
+                <input type="text" name="searchKeyword" placeholder="Search tasks...">
+                <button type="submit">Search</button>
+            </form>
         </div>
         <div class="col-2">
             <p>Log out button </p>
@@ -76,7 +79,8 @@
                 <tbody>
                 <c:forEach var="task" items="${tasksList}" varStatus="status">
                     <tr>
-                        <td>${status.count}</td>
+<%--                        <td>${status.count}</td>--%>
+                        <td>${(currentPage-1)*recordsPerPage + status.count}</td>
                         <td><c:out value="${task.title}"/></td>
                         <td><c:out value="${task.description}"/></td>
                         <td><fmt:formatDate value="${task.duedate}" pattern="yyyy-MM-dd"/></td>
@@ -98,6 +102,37 @@
             </table>
         </c:otherwise>
     </c:choose>
+</div>
+<%--pagination code--%>
+<div class="container d-flex justify-content-center border-primary">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <c:if test="${currentPage != 1}">
+                <li class="page-item">
+                    <a class="page-link" href="DashboardServlet?currentPage=${currentPage - 1}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            </c:if>
+            <c:forEach var="i" begin="1" end="${numOfPages}">
+                <c:choose>
+                    <c:when test="${i == currentPage}">
+                        <li class="page-item active"><a class="page-link" href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}">${i}</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="page-item"><a class="page-link" href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}">${i}</a></li>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+            <c:if test="${currentPage != numOfPages}">
+                <li class="page-item">
+                    <a class="page-link" href="DashboardServlet?currentPage=${currentPage + 1}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </c:if>
+        </ul>
+    </nav>
 </div>
 
 <!-- Create Task Modal -->
