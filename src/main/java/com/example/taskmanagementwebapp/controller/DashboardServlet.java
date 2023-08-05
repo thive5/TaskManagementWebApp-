@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-@WebServlet("/DashboardServlet")
+@WebServlet(name = "DashboardServlet",value = "/DashboardServlet")
 public class DashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(DashboardServlet.class);
@@ -30,9 +30,6 @@ public class DashboardServlet extends HttpServlet {
             return;
         }
         int userId = user.getId();
-        logger.info("Current user:" + userId);
-
-        ///////////////////////////
         int currentPage = 1; //user would be shown page is 1 by default
         int recordsPerPage = 10;// default recordsPerPage is 10
         String searchKeyword = request.getParameter("searchKeyword");//search keyword
@@ -44,10 +41,8 @@ public class DashboardServlet extends HttpServlet {
                 // Handle exception
             }
         }
-        ///////////////////////////
 
         try {
-            ///////////////////////////
             //get total number of task for the user
             int rows = taskBean.getTaskCountForUser(userId);
             int numOfPages = rows/recordsPerPage;
@@ -58,13 +53,12 @@ public class DashboardServlet extends HttpServlet {
             if (currentPage > numOfPages && numOfPages != 0) {
                 currentPage = numOfPages;
             }
-            ///////////////////////////
+
             List<Todotask> tasksList = taskBean.getTaskByUser(userId,recordsPerPage, (currentPage - 1) * recordsPerPage,searchKeyword);
             request.setAttribute("numOfPages", numOfPages);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("recordsPerPage", recordsPerPage);
             request.setAttribute("searchKeyword", searchKeyword);
-            //////////////////////////
             request.setAttribute("tasksList", tasksList);
             RequestDispatcher dispatcher = request.getRequestDispatcher("dashboard.jsp");
             dispatcher.forward(request, response);

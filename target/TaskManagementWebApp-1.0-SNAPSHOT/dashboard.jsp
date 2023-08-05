@@ -79,7 +79,7 @@
                 <tbody>
                 <c:forEach var="task" items="${tasksList}" varStatus="status">
                     <tr>
-<%--                        <td>${status.count}</td>--%>
+                            <%--                        <td>${status.count}</td>--%>
                         <td>${(currentPage-1)*recordsPerPage + status.count}</td>
                         <td><c:out value="${task.title}"/></td>
                         <td><c:out value="${task.description}"/></td>
@@ -117,10 +117,14 @@
             <c:forEach var="i" begin="1" end="${numOfPages}">
                 <c:choose>
                     <c:when test="${i == currentPage}">
-                        <li class="page-item active"><a class="page-link" href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}">${i}</a></li>
+                        <li class="page-item active"><a class="page-link"
+                                                        href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}">${i}</a>
+                        </li>
                     </c:when>
                     <c:otherwise>
-                        <li class="page-item"><a class="page-link" href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}">${i}</a></li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}">${i}</a>
+                        </li>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
@@ -146,7 +150,9 @@
                         aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="createTaskForm" action="CreateTaskServlet" method="post">
+                <form id="createTaskForm" action="TaskServlet" method="post">
+                    <input type="hidden" name="action" value="create">
+                    <%--                    <input type="hidden" id="createTaskId" name="id">--%>
                     <div class="mb-3">
                         <div class="form-group">
                             <label for="title" class="form-label">Title</label>
@@ -215,7 +221,8 @@
                         aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="updateTaskForm" action="UpdateTaskServlet" method="post">
+                <form id="updateTaskForm" action="TaskServlet" method="post">
+                    <input type="hidden" name="action" value="update">
                     <input type="hidden" id="updateTaskId" name="id">
                     <div class="mb-3">
                         <div class="form-group">
@@ -292,7 +299,8 @@
             </div>
             <div class="modal-body">
                 Are you sure you want to delete this task?
-                <form id="deleteTaskForm" action="DeleteTaskServlet" method="post">
+                <form id="deleteTaskForm" action="TaskServlet" method="post">
+                    <input type="hidden" name="action" value="delete">
                     <input type="hidden" id="deleteTaskId" name="id">
                 </form>
             </div>
@@ -310,31 +318,40 @@
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 <script>
-    function openUpdateTaskModal(id, title, description, duedate, status, priority) {
-        document.getElementById('updateTaskId').value = id;
-        document.getElementById('updateTitleId').value = title;
-        document.getElementById('updateDescriptionId').value = description;
-        document.getElementById('updateDuedateId').value = duedate;
-        document.getElementById('updateStatusId').value = status;
-        document.getElementById('updatePriorityId').value = priority;
-        let updateTaskModal = new bootstrap.Modal(document.getElementById('updateTaskModal'));
-        updateTaskModal.show();
-    }
-
     function openCreateTaskModal() {
         let createTaskModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
         createTaskModal.show();
     }
 
-    function openDeleteTaskModal(id){
+    function openUpdateTaskModal(id, title, description, duedate, status, priority) {
+        document.getElementById('updateTaskId').value = id;
+        console.log('updateTaskId:',id);
+        document.getElementById('updateTitleId').value = title;
+        console.log('updateTitleId:',title);
+        document.getElementById('updateDescriptionId').value = description;
+        console.log('updateDescriptionId',description);
+        let changedate = duedate.split(' ')[0];
+        document.getElementById('updateDuedateId').value = changedate;
+        console.log('updateDuedateId',changedate);
+        document.getElementById('updateStatusId').value = status;
+        console.log('updateStatusId',status);
+        document.getElementById('updatePriorityId').value = priority;
+        console.log('updatePriorityId',priority);
+        let updateTaskModal = new bootstrap.Modal(document.getElementById('updateTaskModal'));
+        updateTaskModal.show();
+    }
+
+    function openDeleteTaskModal(id) {
         document.getElementById('deleteTaskId').value = id;
         let deleteTaskModal = new bootstrap.Modal(document.getElementById('deleteTaskModal'));
         deleteTaskModal.show();
     }
 </script>
 <script>
+    //Get back the action type
+    let currentAction = "${currentAction}";
     // Check if the form has validation errors
-    var hasErrors = "${hasErrors}";
+    let hasErrors = "${hasErrors}";
     if (hasErrors) {
         // Get the form data from the request attributes
         var id = "${id}";
@@ -343,25 +360,29 @@
         var duedate = "${duedate}";
         var status = "${status}";
         var priority = "${priority}";
-        // Open the modal with the form data
-        openUpdateTaskModal(id, title, description, duedate, status, priority);
+        if (currentAction === "create") {
+            openCreateTaskModal(id, title, description, duedate, status, priority);
+        } else if (currentAction === "update") {
+            // Open the modal with the form data
+            openUpdateTaskModal(id, title, description, duedate, status, priority);
+        }
     }
 </script>
-<script>
-    // Check if the form has validation errors
-    var createHasErrors = "${createHasErrors}";
-    if (createHasErrors) {
-        // Get the form data from the request attributes
-        var id = "${id}";
-        var title = "${title}";
-        var description = "${description}";
-        var duedate = "${duedate}";
-        var status = "${status}";
-        var priority = "${priority}";
-        // Open the modal with the form data
-        openCreateTaskModal(id, title, description, duedate, status, priority);
-    }
-</script>
+<%--<script>--%>
+<%--    // Check if the form has validation errors--%>
+<%--    var createHasErrors = "${createHasErrors}";--%>
+<%--    if (createHasErrors) {--%>
+<%--        // Get the form data from the request attributes--%>
+<%--        var id = "${id}";--%>
+<%--        var title = "${title}";--%>
+<%--        var description = "${description}";--%>
+<%--        var duedate = "${duedate}";--%>
+<%--        var status = "${status}";--%>
+<%--        var priority = "${priority}";--%>
+<%--        // Open the modal with the form data--%>
+<%--        openCreateTaskModal(id, title, description, duedate, status, priority);--%>
+<%--    }--%>
+<%--</script>--%>
 <script>
     function redirectToDashboard() {
         window.location.href = 'DashboardServlet';
