@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-@WebServlet(name = "DashboardServlet",value = "/DashboardServlet")
+@WebServlet(name = "DashboardServlet", value = "/DashboardServlet")
 public class DashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(DashboardServlet.class);
@@ -22,6 +22,7 @@ public class DashboardServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.info("DashboardServlet doGet called");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         if (user == null) {
@@ -42,10 +43,11 @@ public class DashboardServlet extends HttpServlet {
             }
         }
 
+
         try {
             //get total number of task for the user
             int rows = taskBean.getTaskCountForUser(userId);
-            int numOfPages = rows/recordsPerPage;
+            int numOfPages = rows / recordsPerPage;
             if (rows % recordsPerPage > 0) {
                 //if there is a remainder task, add new page
                 numOfPages++;
@@ -53,8 +55,37 @@ public class DashboardServlet extends HttpServlet {
             if (currentPage > numOfPages && numOfPages != 0) {
                 currentPage = numOfPages;
             }
+            // Get the fields from the session
+            List<String> emptyFields = (List<String>) session.getAttribute("emptyFields");
+            // Check if the list is not null and not empty
+            if (emptyFields != null && !emptyFields.isEmpty()) {
+                // For each empty field, get the error attribute from the session and add it to the request
+                for (String field : emptyFields) {
+                    String error = (String) session.getAttribute(field + "Error");
+                    if (error != null) {
+                        request.setAttribute(field + "Error", error);
+                        // Remove the attribute from the session to avoid it being persisted across requests
+                        session.removeAttribute(field + "Error");
+                        logger.info("Removed Error attribute: " + field);
+                    }
+                }
+                // Remove the emptyFields list from the session
+                session.removeAttribute("emptyFields");
+            }
 
-            List<Todotask> tasksList = taskBean.getTaskByUser(userId,recordsPerPage, (currentPage - 1) * recordsPerPage,searchKeyword);
+
+            String[] attributeNames = {"title", "description", "duedate", "status", "priority", "hasErrors", "currentAction"};
+
+            for (String attributeName : attributeNames) {
+                Object attributeValue = session.getAttribute(attributeName);
+                if (attributeValue != null) {
+                    request.setAttribute(attributeName, attributeValue);
+                    session.removeAttribute(attributeName);
+                    logger.info("Removed session attribute: " + attributeName);
+                }
+            }
+
+            List<Todotask> tasksList = taskBean.getTaskByUser(userId, recordsPerPage, (currentPage - 1) * recordsPerPage, searchKeyword);
             request.setAttribute("numOfPages", numOfPages);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("recordsPerPage", recordsPerPage);
@@ -62,6 +93,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("tasksList", tasksList);
             RequestDispatcher dispatcher = request.getRequestDispatcher("dashboard.jsp");
             dispatcher.forward(request, response);
+
         } catch (Exception e) {
             logger.error("Error while retrieving tasks or forwarding request", e);
         }

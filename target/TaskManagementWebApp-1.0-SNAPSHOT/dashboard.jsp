@@ -54,8 +54,6 @@
 </div>
 <div class="container d-flex justify-content-center border-primary">
     <button type="button" class="btn btn-dark" onclick="openCreateTaskModal()">Create New Task</button>
-    <%--    <button type="button" class="btn btn-primary" onclick="window.location.href='createTask.jsp'">Create New Task--%>
-    <%--    </button>--%>
 </div>
 
 <div class="container d-flex justify-content-center border-primary">
@@ -79,7 +77,6 @@
                 <tbody>
                 <c:forEach var="task" items="${tasksList}" varStatus="status">
                     <tr>
-                            <%--                        <td>${status.count}</td>--%>
                         <td>${(currentPage-1)*recordsPerPage + status.count}</td>
                         <td><c:out value="${task.title}"/></td>
                         <td><c:out value="${task.description}"/></td>
@@ -103,6 +100,7 @@
         </c:otherwise>
     </c:choose>
 </div>
+
 <%--pagination code--%>
 <div class="container d-flex justify-content-center border-primary">
     <nav aria-label="Page navigation">
@@ -295,7 +293,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteTaskModalLabel">Confirm Delete</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet';"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to delete this task?
@@ -305,8 +304,6 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <%--                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>--%>
                 <button type="button" class="btn btn-danger"
                         onclick="document.getElementById('deleteTaskForm').submit();">Delete Task
                 </button>
@@ -325,18 +322,12 @@
 
     function openUpdateTaskModal(id, title, description, duedate, status, priority) {
         document.getElementById('updateTaskId').value = id;
-        console.log('updateTaskId:',id);
         document.getElementById('updateTitleId').value = title;
-        console.log('updateTitleId:',title);
         document.getElementById('updateDescriptionId').value = description;
-        console.log('updateDescriptionId',description);
         let changedate = duedate.split(' ')[0];
         document.getElementById('updateDuedateId').value = changedate;
-        console.log('updateDuedateId',changedate);
         document.getElementById('updateStatusId').value = status;
-        console.log('updateStatusId',status);
         document.getElementById('updatePriorityId').value = priority;
-        console.log('updatePriorityId',priority);
         let updateTaskModal = new bootstrap.Modal(document.getElementById('updateTaskModal'));
         updateTaskModal.show();
     }
@@ -368,21 +359,6 @@
         }
     }
 </script>
-<%--<script>--%>
-<%--    // Check if the form has validation errors--%>
-<%--    var createHasErrors = "${createHasErrors}";--%>
-<%--    if (createHasErrors) {--%>
-<%--        // Get the form data from the request attributes--%>
-<%--        var id = "${id}";--%>
-<%--        var title = "${title}";--%>
-<%--        var description = "${description}";--%>
-<%--        var duedate = "${duedate}";--%>
-<%--        var status = "${status}";--%>
-<%--        var priority = "${priority}";--%>
-<%--        // Open the modal with the form data--%>
-<%--        openCreateTaskModal(id, title, description, duedate, status, priority);--%>
-<%--    }--%>
-<%--</script>--%>
 <script>
     function redirectToDashboard() {
         window.location.href = 'DashboardServlet';
