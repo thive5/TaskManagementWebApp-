@@ -1,9 +1,13 @@
 <%@ page import="com.example.taskmanagementwebapp.model.entity.Todotask" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.apache.log4j.Logger" %>
+
 <%@ page import="com.example.taskmanagementwebapp.model.entity.User" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+
 <html>
 <head>
     <title>dashboard.jsp</title>
@@ -35,11 +39,32 @@
         </div>
     </div>
 </div>
-
+<%
+    // Create a Logger instance with a name
+    Logger logger = Logger.getLogger("DashboardLogger");
+%>
 <div class="container-fluid bg-primary" style="--bs-bg-opacity: .5;">
     <div class="row justify-content-evenly">
         <div class="col-2 d-flex align-items-center justify-content-center">
-            <button type="button" class="btn btn-warning btn-lg">Completed</button>
+            <div class="dropdown">
+                <button type="button" class="btn btn-warning btn-lg dropdown-toggle" id="dropdownDueDateBtn"
+                        data-bs-toggle="dropdown" aria-expanded="false">Due Date
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownDueDateBtn">
+                    <li><a class="dropdown-item" href="#"
+                           onclick="console.log('Soonest clicked');document.getElementById('duedateSortInput').value='ASC'; document.getElementById('duedateSortForm').submit(); ">Soonest</a>
+
+                    </li>
+                    <li><a class="dropdown-item" href="#"
+                           onclick="console.log('Furthest clicked');document.getElementById('duedateSortInput').value='DESC'; document.getElementById('duedateSortForm').submit(); ">Furthest</a>
+
+                    </li>
+                </ul>
+                <!-- Hidden form -->
+                <form id="duedateSortForm" action="DashboardServlet" method="get" style="display: none;">
+                    <input type="hidden" id="duedateSortInput" name="duedateSortInput" value="">
+                </form>
+            </div>
         </div>
         <div class="col-2 d-flex align-items-center justify-content-center">
             <button type="button" class="btn btn-warning btn-lg">Pending</button>
@@ -107,7 +132,9 @@
         <ul class="pagination">
             <c:if test="${currentPage != 1}">
                 <li class="page-item">
-                    <a class="page-link" href="DashboardServlet?currentPage=${currentPage - 1}" aria-label="Previous">
+                    <a class="page-link"
+                       href="DashboardServlet?currentPage=${currentPage - 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}"
+                       aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -115,20 +142,24 @@
             <c:forEach var="i" begin="1" end="${numOfPages}">
                 <c:choose>
                     <c:when test="${i == currentPage}">
-                        <li class="page-item active"><a class="page-link"
-                                                        href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}">${i}</a>
+                        <li class="page-item active">
+                            <a class="page-link"
+                               href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}">${i}</a>
                         </li>
                     </c:when>
                     <c:otherwise>
-                        <li class="page-item"><a class="page-link"
-                                                 href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}">${i}</a>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}">${i}</a>
                         </li>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
             <c:if test="${currentPage != numOfPages}">
                 <li class="page-item">
-                    <a class="page-link" href="DashboardServlet?currentPage=${currentPage + 1}" aria-label="Next">
+                    <a class="page-link"
+                       href="DashboardServlet?currentPage=${currentPage + 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}"
+                       aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

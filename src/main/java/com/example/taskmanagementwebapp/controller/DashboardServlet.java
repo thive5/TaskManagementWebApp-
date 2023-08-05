@@ -34,6 +34,8 @@ public class DashboardServlet extends HttpServlet {
         int currentPage = 1; //user would be shown page is 1 by default
         int recordsPerPage = 10;// default recordsPerPage is 10
         String searchKeyword = request.getParameter("searchKeyword");//search keyword
+        String duedateSortInput = request.getParameter("duedateSortInput");
+        logger.info("duedateSortInput="+ duedateSortInput);
         if (request.getParameter("currentPage") != null) {
             try {
                 //check if the current is page 1 or not, if not 1 pass the current page value
@@ -85,11 +87,12 @@ public class DashboardServlet extends HttpServlet {
                 }
             }
 
-            List<Todotask> tasksList = taskBean.getTaskByUser(userId, recordsPerPage, (currentPage - 1) * recordsPerPage, searchKeyword);
+            List<Todotask> tasksList = taskBean.getTaskByUser(userId, recordsPerPage, (currentPage - 1) * recordsPerPage, searchKeyword,duedateSortInput);
             request.setAttribute("numOfPages", numOfPages);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("recordsPerPage", recordsPerPage);
             request.setAttribute("searchKeyword", searchKeyword);
+            request.setAttribute("duedateSortInput", duedateSortInput);
             request.setAttribute("tasksList", tasksList);
             RequestDispatcher dispatcher = request.getRequestDispatcher("dashboard.jsp");
             dispatcher.forward(request, response);

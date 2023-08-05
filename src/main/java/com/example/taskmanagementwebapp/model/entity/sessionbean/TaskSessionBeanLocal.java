@@ -7,7 +7,7 @@ import java.util.List;
 
 @Local
 public interface TaskSessionBeanLocal {
-    public List<Todotask> getTaskByUser(Integer userId,int maxResults,int firstResult,String searchKeyword) throws EJBException;
+    public List<Todotask> getTaskByUser(Integer userId, int maxResults, int firstResult, String searchKeyword, String duedateSortInput) throws EJBException;
     public void createTask(Todotask task);
     public void updateTask(Todotask task);
     public void deleteTask(int id);

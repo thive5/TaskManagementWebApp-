@@ -1,5 +1,6 @@
 package com.example.taskmanagementwebapp.model.entity.sessionbean;
 
+import com.example.taskmanagementwebapp.controller.DashboardServlet;
 import com.example.taskmanagementwebapp.model.entity.Todotask;
 
 import javax.ejb.EJBException;
@@ -8,24 +9,37 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-
+import org.apache.log4j.Logger;
 @Stateless
 public class TaskSessionBean implements TaskSessionBeanLocal {
-
+    private static final Logger logger = Logger.getLogger(TaskSessionBean.class);
     @PersistenceContext(unitName = "TaskManagementWebApp")
     EntityManager entityManager;
 
     @Override
-    public List<Todotask> getTaskByUser(Integer userId,int maxResults, int firstResult,String searchKeyword) throws EJBException {
+    public List<Todotask> getTaskByUser(Integer userId, int maxResults, int firstResult, String searchKeyword, String duedateSortInput) throws EJBException {
 
+        logger.info("duedateSortInput=" + duedateSortInput);
         Query q = null;
-        if(searchKeyword == null ||searchKeyword.isEmpty()){
-            q = entityManager.createQuery("SELECT t FROM Todotask t WHERE t.userid.id = :userId ORDER BY t.id", Todotask.class);
-            q.setParameter("userId", userId);
-        }else {
-            q = entityManager.createQuery("SELECT t FROM Todotask t WHERE t.userid.id = :userId AND (t.title LIKE :searchKeyword OR t.description LIKE :searchKeyword)", Todotask.class);
+        String baseQuery = "SELECT t FROM Todotask t WHERE t.userid.id = :userId";
+        String orderByClause = "";
+
+        if (searchKeyword != null && !searchKeyword.isEmpty()) {
+            baseQuery += " AND (t.title LIKE :searchKeyword OR t.description LIKE :searchKeyword)";
+        }
+        if (duedateSortInput != null && !duedateSortInput.isEmpty()) {
+            if (duedateSortInput.equals("ASC")) {
+                orderByClause = " ORDER BY t.duedate ASC";
+            } else if (duedateSortInput.equals("DESC")) {
+                orderByClause = " ORDER BY t.duedate DESC";
+            }
+        }
+
+        String fullQuery = baseQuery + orderByClause;
+        q = entityManager.createQuery(fullQuery, Todotask.class);
+        q.setParameter("userId", userId);
+        if (searchKeyword != null && !searchKeyword.isEmpty()) {
             q.setParameter("searchKeyword", "%" + searchKeyword + "%");
-            q.setParameter("userId", userId);
         }
 
         q.setMaxResults(maxResults);
@@ -33,6 +47,7 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
         List<Todotask> resultList = q.getResultList();
         return resultList;
     }
+
     @Override
     public int getTaskCountForUser(int userId) {
         Query q = entityManager.createQuery("SELECT COUNT(t) FROM Todotask t WHERE t.userid.id = :userId");
