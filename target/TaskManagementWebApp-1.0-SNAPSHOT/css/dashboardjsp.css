@@ -15,6 +15,10 @@ body {
     padding: 20px;
 }
 
+#completedForm{
+    margin: 0px;
+}
+
 .search-input {
     display: inline;
     justify-content: center;
@@ -30,6 +34,9 @@ body {
     border-radius: 45px;
     margin-bottom: 5px;
     /*margin-top: 10px;*/
+}
+#resetBtn{
+    font-weight: bold;
 }
 
 .container-fluid {

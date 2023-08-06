@@ -12,4 +12,5 @@ public interface TaskSessionBeanLocal {
     public void updateTask(Todotask task);
     public void deleteTask(int id);
     public int getTaskCountForUser(int userId,String searchKeyword, String duedateSortInput,String statusInput,String priorityInput); //to get num or pages for user records
+    public void completeTask(int taskId,String completedStatus);
 }

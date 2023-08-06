@@ -93,6 +93,7 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
         return ((Long) q.getSingleResult()).intValue();
     }
 
+
     @Override
     public void createTask(Todotask task) {
         entityManager.persist(task);
@@ -111,6 +112,21 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
         // If the task exists, remove it
         if (task != null) {
             entityManager.remove(task);
+        }
+    }
+    @Override
+    public void completeTask(int taskId, String completedStatus) {
+        // Get the task from the database
+        Todotask task = entityManager.find(Todotask.class, taskId);
+        if (task != null) {
+            // Update the task status
+            task.setStatus(completedStatus);
+
+            // Persist the changes back to the database
+            entityManager.persist(task);
+        } else {
+            // Handle the case where no task with the given ID was found
+            logger.warn("No task found with ID: " + taskId);
         }
     }
 }

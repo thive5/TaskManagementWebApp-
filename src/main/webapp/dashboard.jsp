@@ -14,6 +14,9 @@
     <link rel="stylesheet" type="text/css" href="css/dashboardjsp.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/106fca075c.js" crossorigin="anonymous"></script>
+
     <!-- Include the Font Awesome library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
@@ -26,7 +29,7 @@
                 if (user != null) {
             %>
             <div class="welcome-container">
-                <h2>Welcome to your dashboard33, <%= user.getUsername() %>!</h2>
+                <h2>Welcome to your dashboard <span class="badge bg-secondary"><%= user.getUsername() %></span></h2>
             </div>
             <%
                 }
@@ -35,12 +38,16 @@
         <div class="col-4 welcomeMiddle">
             <form class="search-form" action="DashboardServlet" method="get">
                 <input type="text" class="search-input" name="searchKeyword" placeholder="   Search tasks...">
-                <button type="submit" class="btn btn-outline-light btn-lg" id="searchBtn"><i class="fas fa-search"></i>   Search</button>
+                <button type="submit" class="btn btn-outline-light btn-lg" id="searchBtn"><i class="fas fa-search"></i>
+                    Search
+                </button>
             </form>
         </div>
-        <div class="col-2 welcomeMiddle" >
+        <div class="col-2 welcomeMiddle">
             <form action="${pageContext.request.contextPath}/LogoutServlet" method="get">
-                <button type="submit" class="btn btn-danger btn-lg" id="logoutBtn"><i class="fas fa-solid fa-power-off"></i>  Logout</button>
+                <button type="submit" class="btn btn-danger btn-lg" id="logoutBtn"><i
+                        class="fas fa-solid fa-power-off"></i> Logout
+                </button>
             </form>
         </div>
     </div>
@@ -50,8 +57,21 @@
     Logger logger = Logger.getLogger("DashboardLogger");
 %>
 
-<div class="container d-flex justify-content-center border-primary">
-    <button type="button" class="btn btn-dark" onclick="openCreateTaskModal()">Create New Task</button>
+<div class="container d-flex justify-content-center p-3">
+    <div class="row align-items-center">
+        <div class="col">
+            <button type="button" class="btn btn-dark btn-lg" style="white-space: nowrap;"
+                    onclick="openCreateTaskModal()"><i class="fa-sharp fa-solid fa-circle-plus fa-xl"
+                                                       style="color: #fcfcfc;margin-right: 10px;"></i>Create New Task
+            </button>
+        </div>
+        <div class="col">
+            <button type="button" id="resetBtn" class="btn btn-warning btn-lg"
+                    onclick="window.location.href = 'DashboardServlet';"><i class="fa-solid fa-rotate-right fa-xl"
+                                                                            style="color: #0d0d0d;margin-right: 10px;"></i>Reset
+            </button>
+        </div>
+    </div>
 </div>
 
 <div class="container d-flex justify-content-center border-primary">
@@ -89,6 +109,7 @@
                                 <%--                            <c:out value="${task.status}"/>--%>
                             <c:choose>
                                 <c:when test="${task.status == 'pending'}">
+                                    <%--                                    <span class="badge text-bg-light">${task.status}</span>--%>
                                     <span class="status-pending">${task.status}</span>
                                 </c:when>
                                 <c:otherwise>
@@ -106,6 +127,7 @@
                                     <span class="priority-medium">${task.priority}</span>
                                 </c:when>
                                 <c:otherwise>
+                                    <%--                                    <span class="badge text-bg-light">${task.priority}</span>--%>
                                     <span class="priority-low">${task.priority}</span>
                                 </c:otherwise>
                             </c:choose>
@@ -113,12 +135,21 @@
                         <td>
                             <button type="button" class="btn btn-primary"
                                     onclick="openUpdateTaskModal(${task.id}, '${task.title}', '${task.description}', '${task.duedate}', '${task.status}', '${task.priority}')">
+                                <i class="fa-solid fa-pen fa-xl" style="color: #fcfcfc;"></i>
                                 Update
                             </button>
-                            <button type="button" class="btn btn-danger" onclick="openDeleteTaskModal(${task.id})">
+                            <button type="button" class="btn btn-danger" onclick="openDeleteTaskModal(${task.id})"><i
+                                    class="fa-solid fa-trash fa-xl" style="color: #000000;"></i>
                                 Remove
                             </button>
-                            <button type="button" class="btn btn-success">Completed</button>
+                            <form action="${pageContext.request.contextPath}/CompleteServlet" method="get"
+                                  id="completedForm" style="display: inline;">
+                                <input type="hidden" name="taskId" value="${task.id}"/>
+                                <input type="hidden" name="completedStatus" value="completed"/>
+                                <button type="submit" class="btn btn-success"><i class="fa-solid fa-circle-check fa-xl"
+                                                                                 style="color: #00FF00;"></i> Completed
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 </c:forEach>
@@ -131,7 +162,7 @@
 <%--pagination code--%>
 <div class="container d-flex justify-content-center border-primary">
     <nav aria-label="Page navigation">
-        <ul class="pagination">
+        <ul class="pagination pagination-lg justify-content-center">
             <c:if test="${currentPage != 1}">
                 <li class="page-item">
                     <a class="page-link"
@@ -397,6 +428,25 @@
         window.location.href = "DashboardServlet";
     }
 </script>
+<%--<script>--%>
+<%--    $(document).ready(function() {--%>
+<%--        $('#complete-task').click(function() {--%>
+<%--            var taskId = $(this).data('task-id');--%>
+
+<%--            $.post('${pageContext.request.contextPath}/CompleteServlet', {--%>
+<%--                taskId: taskId,--%>
+<%--                completedStatus: 'completed'--%>
+<%--            }, function(data, status) {--%>
+<%--                if (status === 'success') {--%>
+<%--                    // Here you can add code to handle a successful completion, like updating the UI--%>
+<%--                } else {--%>
+<%--                    console.error('There was an error completing the task');--%>
+<%--                }--%>
+<%--            });--%>
+<%--        });--%>
+<%--    });--%>
+<%--</script>--%>
+
 
 </body>
 </html>
