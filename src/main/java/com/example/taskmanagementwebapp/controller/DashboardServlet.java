@@ -37,6 +37,7 @@ public class DashboardServlet extends HttpServlet {
         String duedateSortInput = request.getParameter("duedateSortInput");
         String statusInput = request.getParameter("statusInput");
         String priorityInput = request.getParameter("priorityInput");
+        logger.info("priorityInput= "+priorityInput);
         if (request.getParameter("currentPage") != null) {
             try {
                 //check if the current is page 1 or not, if not 1 pass the current page value
@@ -94,6 +95,8 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("recordsPerPage", recordsPerPage);
             request.setAttribute("searchKeyword", searchKeyword);
             request.setAttribute("duedateSortInput", duedateSortInput);
+            request.setAttribute("statusInput", statusInput);
+            request.setAttribute("priorityInput", priorityInput);
             request.setAttribute("tasksList", tasksList);
             RequestDispatcher dispatcher = request.getRequestDispatcher("dashboard.jsp");
             dispatcher.forward(request, response);

@@ -1,7 +1,83 @@
-.container-fluid{
+body {
+    background-color: #343a40 !important; /* Bootstrap's bg-secondary color */
+}
+.welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh; /* Adjust this value as needed */
+    text-align: center;
+}
+/*.search-form {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    flex-direction: column; !* Stack the elements vertically *!*/
+/*    height: 10vh; !* Adjust this value as needed *!*/
+/*}*/
+
+.search-input,
+.search-button {
+
+    display: inline;
+    justify-content: center;
+    align-items: center;
+    /*margin: 10px; !* Add some space around the input and button *!*/
+    border-radius: 15px; /* Adjust as needed */
+    /*padding: 5px;*/
+}
+
+
+
+.container-fluid {
     padding: 10px;
 }
-#main-container{
+
+#main-container {
     color: whitesmoke;
     font-size: 30px;
+}
+
+.status-pending,
+.status-completed,
+.priority-high,
+.priority-medium,
+.priority-low {
+    padding: 5px 5px; /* Adjust as needed */
+    border-radius: 5px; /* Adjust as needed */
+    /* background-color: #808080 ;  Light grey */
+    color: black;
+    font-weight: bold;
+}
+
+.status-pending {
+    background-color: rgba(255, 165, 0, 0.8) !important; /* Orange */
+}
+
+.status-completed {
+    background-color: rgba(0, 255, 0, 0.8) !important; /* Green */
+}
+
+.priority-high {
+    background-color: rgba(255, 0, 56, 0.8) !important; /* Red */
+}
+
+.priority-medium {
+    background-color: rgba(255, 255, 0, 0.8) !important; /* Yellow */
+}
+
+.priority-low {
+    background-color: rgba(0, 112, 255, 0.8) !important; /* Blue */
+}
+
+.pagination a {
+    color: whitesmoke;
+    background: black;
+    /*border: 1px #343a40;*/
+
+}
+
+.pagination a:hover {
+    color: whitesmoke; /* Bootstrap's yellow color */
+    background: #343a40;
 }

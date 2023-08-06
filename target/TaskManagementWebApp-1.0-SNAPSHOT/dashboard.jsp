@@ -14,24 +14,28 @@
     <link rel="stylesheet" type="text/css" href="css/dashboardjsp.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include the Font Awesome library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-<div class="container-fluid bg-primary" id="main-container">
+<div class="container-fluid bg-dark" id="main-container">
     <div class="row text-center">
         <div class="col-6">
             <%
                 User user = (User) session.getAttribute("user");
                 if (user != null) {
             %>
-            <h2>Welcome to your dashboard, <%= user.getUsername() %>!</h2>
+            <div class="welcome-container">
+                <h2>Welcome to your dashboard33, <%= user.getUsername() %>!</h2>
+            </div>
             <%
                 }
             %>
         </div>
         <div class="col-4">
-            <form action="DashboardServlet" method="get">
-                <input type="text" name="searchKeyword" placeholder="Search tasks...">
-                <button type="submit">Search</button>
+            <form class="search-form" action="DashboardServlet" method="get">
+                <input type="text" class="search-input" name="searchKeyword" placeholder="Search tasks...">
+                <button type="submit" class="search-button"><i class="fas fa-search"></i>Search</button>
             </form>
         </div>
         <div class="col-2">
@@ -43,40 +47,7 @@
     // Create a Logger instance with a name
     Logger logger = Logger.getLogger("DashboardLogger");
 %>
-<div class="container-fluid bg-primary" style="--bs-bg-opacity: .5;">
-    <div class="row justify-content-evenly">
-        <div class="col-2 d-flex align-items-center justify-content-center">
-            <div class="dropdown">
-                <%--                <button type="button" class="btn btn-warning btn-lg dropdown-toggle" id="dropdownDueDateBtn"--%>
-                <%--                        data-bs-toggle="dropdown" aria-expanded="false">Due Date--%>
-                <%--                </button>--%>
-                <%--                <ul class="dropdown-menu" aria-labelledby="dropdownDueDateBtn">--%>
-                <%--                    <li><a class="dropdown-item" href="#"--%>
-                <%--                           onclick="console.log('Soonest clicked');document.getElementById('duedateSortInput').value='ASC'; document.getElementById('duedateSortForm').submit(); ">Soonest</a>--%>
 
-                <%--                    </li>--%>
-                <%--                    <li><a class="dropdown-item" href="#"--%>
-                <%--                           onclick="console.log('Furthest clicked');document.getElementById('duedateSortInput').value='DESC'; document.getElementById('duedateSortForm').submit(); ">Furthest</a>--%>
-
-                <%--                    </li>--%>
-                <%--                </ul>--%>
-                <%--                <!-- Hidden form -->--%>
-                <%--                <form id="duedateSortForm" action="DashboardServlet" method="get" style="display: none;">--%>
-                <%--                    <input type="hidden" id="duedateSortInput" name="duedateSortInput" value="">--%>
-                <%--                </form>--%>
-            </div>
-        </div>
-        <div class="col-2 d-flex align-items-center justify-content-center">
-            <button type="button" class="btn btn-warning btn-lg">Pending</button>
-        </div>
-        <div class="col-2 d-flex align-items-center justify-content-center">
-            <button type="button" class="btn btn-warning btn-lg">Button 3</button>
-        </div>
-        <div class="col-2 d-flex align-items-center justify-content-center">
-            <button type="button" class="btn btn-warning btn-lg">Button 4</button>
-        </div>
-    </div>
-</div>
 <div class="container d-flex justify-content-center border-primary">
     <button type="button" class="btn btn-dark" onclick="openCreateTaskModal()">Create New Task</button>
 </div>
@@ -87,30 +58,13 @@
             <p>No tasks found.</p>
         </c:when>
         <c:otherwise>
-            <table class="table table-striped table-hover m-3">
+            <table class="table table-striped table-hover table-dark m-3">
                 <thead class="table-dark">
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Title</th>
                     <th scope="col">Description</th>
                     <th scope="col">Due Date
-                            <%--                        <div class="dropdown d-inline">--%>
-                            <%--                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" id="dropdownDueDateBtn"--%>
-                            <%--                                    data-bs-toggle="dropdown" aria-expanded="false">--%>
-                            <%--                            </button>--%>
-                            <%--                            <ul class="dropdown-menu" aria-labelledby="dropdownDueDateBtn">--%>
-                            <%--                                <li><a class="dropdown-item" href="#"--%>
-                            <%--                                       onclick="console.log('Soonest clicked');document.getElementById('duedateSortInput').value='ASC'; document.getElementById('duedateSortForm').submit(); ">Soonest</a>--%>
-                            <%--                                </li>--%>
-                            <%--                                <li><a class="dropdown-item" href="#"--%>
-                            <%--                                       onclick="console.log('Furthest clicked');document.getElementById('duedateSortInput').value='DESC'; document.getElementById('duedateSortForm').submit(); ">Furthest</a>--%>
-                            <%--                                </li>--%>
-                            <%--                            </ul>--%>
-                            <%--                            <!-- Hidden form -->--%>
-                            <%--                            <form id="duedateSortForm" action="DashboardServlet" method="get" style="display: none;">--%>
-                            <%--                                <input type="hidden" id="duedateSortInput" name="duedateSortInput" value="">--%>
-                            <%--                            </form>--%>
-                            <%--                        </div>--%>
                         <%@ include file="duedate_dropdown.html" %>
                     </th>
                     <th scope="col">Status
@@ -129,8 +83,31 @@
                         <td><c:out value="${task.title}"/></td>
                         <td><c:out value="${task.description}"/></td>
                         <td><fmt:formatDate value="${task.duedate}" pattern="yyyy-MM-dd"/></td>
-                        <td><c:out value="${task.status}"/></td>
-                        <td><c:out value="${task.priority}"/></td>
+                        <td>
+                                <%--                            <c:out value="${task.status}"/>--%>
+                            <c:choose>
+                                <c:when test="${task.status == 'pending'}">
+                                    <span class="status-pending">${task.status}</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="status-completed">${task.status}</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>
+                                <%--                            <c:out value="${task.priority}"/>--%>
+                            <c:choose>
+                                <c:when test="${task.priority == 'high'}">
+                                    <span class="priority-high">${task.priority}</span>
+                                </c:when>
+                                <c:when test="${task.priority == 'medium'}">
+                                    <span class="priority-medium">${task.priority}</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="priority-low">${task.priority}</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>
                             <button type="button" class="btn btn-primary"
                                     onclick="openUpdateTaskModal(${task.id}, '${task.title}', '${task.description}', '${task.duedate}', '${task.status}', '${task.priority}')">
@@ -156,7 +133,7 @@
             <c:if test="${currentPage != 1}">
                 <li class="page-item">
                     <a class="page-link"
-                       href="DashboardServlet?currentPage=${currentPage - 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}"
+                       href="DashboardServlet?currentPage=${currentPage - 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}"
                        aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
@@ -167,13 +144,13 @@
                     <c:when test="${i == currentPage}">
                         <li class="page-item active">
                             <a class="page-link"
-                               href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}">${i}</a>
+                               href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}">${i}</a>
                         </li>
                     </c:when>
                     <c:otherwise>
                         <li class="page-item">
                             <a class="page-link"
-                               href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}">${i}</a>
+                               href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}">${i}</a>
                         </li>
                     </c:otherwise>
                 </c:choose>
@@ -181,7 +158,7 @@
             <c:if test="${currentPage != numOfPages}">
                 <li class="page-item">
                     <a class="page-link"
-                       href="DashboardServlet?currentPage=${currentPage + 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}"
+                       href="DashboardServlet?currentPage=${currentPage + 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&priorityInput=${priorityInput}&statusInput=${statusInput}"
                        aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
