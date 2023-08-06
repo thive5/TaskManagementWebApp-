@@ -35,7 +35,8 @@ public class DashboardServlet extends HttpServlet {
         int recordsPerPage = 10;// default recordsPerPage is 10
         String searchKeyword = request.getParameter("searchKeyword");//search keyword
         String duedateSortInput = request.getParameter("duedateSortInput");
-        logger.info("duedateSortInput="+ duedateSortInput);
+        String statusInput = request.getParameter("statusInput");
+        String priorityInput = request.getParameter("priorityInput");
         if (request.getParameter("currentPage") != null) {
             try {
                 //check if the current is page 1 or not, if not 1 pass the current page value
@@ -76,7 +77,7 @@ public class DashboardServlet extends HttpServlet {
             }
 
 
-            String[] attributeNames = {"title", "description", "duedate", "status", "priority", "hasErrors", "currentAction"};
+            String[] attributeNames = {"id","title", "description", "duedate", "status", "priority", "hasErrors", "currentAction"};
 
             for (String attributeName : attributeNames) {
                 Object attributeValue = session.getAttribute(attributeName);
@@ -87,7 +88,7 @@ public class DashboardServlet extends HttpServlet {
                 }
             }
 
-            List<Todotask> tasksList = taskBean.getTaskByUser(userId, recordsPerPage, (currentPage - 1) * recordsPerPage, searchKeyword,duedateSortInput);
+            List<Todotask> tasksList = taskBean.getTaskByUser(userId, recordsPerPage, (currentPage - 1) * recordsPerPage, searchKeyword,duedateSortInput,statusInput,priorityInput);
             request.setAttribute("numOfPages", numOfPages);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("recordsPerPage", recordsPerPage);

@@ -1,0 +1,17 @@
+<div class="dropdown d-inline">
+    <button type="button" class="btn btn-light btn-sm dropdown-toggle" id="dropdownStatusBtn"
+            data-bs-toggle="dropdown" aria-expanded="false">
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownStatusBtn">
+        <li><a class="dropdown-item" href="#"
+               onclick="document.getElementById('statusInput').value='pending'; document.getElementById('statusForm').submit(); ">Pending</a>
+        </li>
+        <li><a class="dropdown-item" href="#"
+               onclick="document.getElementById('statusInput').value='completed'; document.getElementById('statusForm').submit(); ">Completed</a>
+        </li>
+    </ul>
+    <!-- Hidden form -->
+    <form id="statusForm" action="DashboardServlet" method="get" style="display: none;">
+        <input type="hidden" id="statusInput" name="statusInput" value="">
+    </form>
+</div>

@@ -64,7 +64,11 @@ public class TaskServlet extends HttpServlet {
                 // Add the emptyFields list to the session
                 session.setAttribute("emptyFields", emptyFields);
                 // Add back the form fields with values submitted by user back to user using the request attributes
-                //request.setAttribute("id", id);
+                String idString = request.getParameter("id");
+                if (idString != null && !idString.isEmpty()) {
+                    int id = Integer.parseInt(idString);
+                    session.setAttribute("id", id);
+                }
                 //request.setAttribute("title", title);
                 session.setAttribute("title", title);
                 //request.setAttribute("description", description);
@@ -105,6 +109,7 @@ public class TaskServlet extends HttpServlet {
             createTask(request, response, title, description, date, status, priority, user);
         } else if ("update".equals(action)) {
             updateTask(request, response, title, description, date, status, priority, user);
+            return;
         } else if ("delete".equals(action)) {
             deleteTask(request, response);
         } else {
@@ -140,6 +145,7 @@ public class TaskServlet extends HttpServlet {
         } else {
             // handle error: id is required for updates
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id for update");
+            return;
         }
         updateTask.setTitle(title);
         updateTask.setDescription(description);

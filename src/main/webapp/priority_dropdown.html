@@ -1,0 +1,20 @@
+<div class="dropdown d-inline">
+    <button type="button" class="btn btn-light btn-sm dropdown-toggle" id="dropdownPriorityBtn"
+            data-bs-toggle="dropdown" aria-expanded="false">
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownPriorityBtn">
+        <li><a class="dropdown-item" href="#"
+               onclick="document.getElementById('priorityInput').value='high'; document.getElementById('priorityForm').submit(); ">High</a>
+        </li>
+        <li><a class="dropdown-item" href="#"
+               onclick="document.getElementById('priorityInput').value='medium'; document.getElementById('priorityForm').submit(); ">Medium</a>
+        </li>
+        <li><a class="dropdown-item" href="#"
+               onclick="document.getElementById('priorityInput').value='low'; document.getElementById('priorityForm').submit(); ">Low</a>
+        </li>
+    </ul>
+    <!-- Hidden form -->
+    <form id="priorityForm" action="DashboardServlet" method="get" style="display: none;">
+        <input type="hidden" id="priorityInput" name="priorityInput" value="">
+    </form>
+</div>

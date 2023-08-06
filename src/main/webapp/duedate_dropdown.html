@@ -1,0 +1,17 @@
+<div class="dropdown d-inline">
+    <button type="button" class="btn btn-light btn-sm dropdown-toggle" id="dropdownDueDateBtn"
+            data-bs-toggle="dropdown" aria-expanded="false">
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownDueDateBtn">
+        <li><a class="dropdown-item" href="#"
+               onclick="console.log('Soonest clicked');document.getElementById('duedateSortInput').value='ASC'; document.getElementById('duedateSortForm').submit(); ">Soonest</a>
+        </li>
+        <li><a class="dropdown-item" href="#"
+               onclick="console.log('Furthest clicked');document.getElementById('duedateSortInput').value='DESC'; document.getElementById('duedateSortForm').submit(); ">Furthest</a>
+        </li>
+    </ul>
+    <!-- Hidden form -->
+    <form id="duedateSortForm" action="DashboardServlet" method="get" style="display: none;">
+        <input type="hidden" id="duedateSortInput" name="duedateSortInput" value="">
+    </form>
+</div>

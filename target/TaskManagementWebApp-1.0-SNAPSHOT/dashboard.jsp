@@ -47,23 +47,23 @@
     <div class="row justify-content-evenly">
         <div class="col-2 d-flex align-items-center justify-content-center">
             <div class="dropdown">
-                <button type="button" class="btn btn-warning btn-lg dropdown-toggle" id="dropdownDueDateBtn"
-                        data-bs-toggle="dropdown" aria-expanded="false">Due Date
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownDueDateBtn">
-                    <li><a class="dropdown-item" href="#"
-                           onclick="console.log('Soonest clicked');document.getElementById('duedateSortInput').value='ASC'; document.getElementById('duedateSortForm').submit(); ">Soonest</a>
+                <%--                <button type="button" class="btn btn-warning btn-lg dropdown-toggle" id="dropdownDueDateBtn"--%>
+                <%--                        data-bs-toggle="dropdown" aria-expanded="false">Due Date--%>
+                <%--                </button>--%>
+                <%--                <ul class="dropdown-menu" aria-labelledby="dropdownDueDateBtn">--%>
+                <%--                    <li><a class="dropdown-item" href="#"--%>
+                <%--                           onclick="console.log('Soonest clicked');document.getElementById('duedateSortInput').value='ASC'; document.getElementById('duedateSortForm').submit(); ">Soonest</a>--%>
 
-                    </li>
-                    <li><a class="dropdown-item" href="#"
-                           onclick="console.log('Furthest clicked');document.getElementById('duedateSortInput').value='DESC'; document.getElementById('duedateSortForm').submit(); ">Furthest</a>
+                <%--                    </li>--%>
+                <%--                    <li><a class="dropdown-item" href="#"--%>
+                <%--                           onclick="console.log('Furthest clicked');document.getElementById('duedateSortInput').value='DESC'; document.getElementById('duedateSortForm').submit(); ">Furthest</a>--%>
 
-                    </li>
-                </ul>
-                <!-- Hidden form -->
-                <form id="duedateSortForm" action="DashboardServlet" method="get" style="display: none;">
-                    <input type="hidden" id="duedateSortInput" name="duedateSortInput" value="">
-                </form>
+                <%--                    </li>--%>
+                <%--                </ul>--%>
+                <%--                <!-- Hidden form -->--%>
+                <%--                <form id="duedateSortForm" action="DashboardServlet" method="get" style="display: none;">--%>
+                <%--                    <input type="hidden" id="duedateSortInput" name="duedateSortInput" value="">--%>
+                <%--                </form>--%>
             </div>
         </div>
         <div class="col-2 d-flex align-items-center justify-content-center">
@@ -93,9 +93,32 @@
                     <th scope="col">#</th>
                     <th scope="col">Title</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Due Date</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Priority</th>
+                    <th scope="col">Due Date
+                            <%--                        <div class="dropdown d-inline">--%>
+                            <%--                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" id="dropdownDueDateBtn"--%>
+                            <%--                                    data-bs-toggle="dropdown" aria-expanded="false">--%>
+                            <%--                            </button>--%>
+                            <%--                            <ul class="dropdown-menu" aria-labelledby="dropdownDueDateBtn">--%>
+                            <%--                                <li><a class="dropdown-item" href="#"--%>
+                            <%--                                       onclick="console.log('Soonest clicked');document.getElementById('duedateSortInput').value='ASC'; document.getElementById('duedateSortForm').submit(); ">Soonest</a>--%>
+                            <%--                                </li>--%>
+                            <%--                                <li><a class="dropdown-item" href="#"--%>
+                            <%--                                       onclick="console.log('Furthest clicked');document.getElementById('duedateSortInput').value='DESC'; document.getElementById('duedateSortForm').submit(); ">Furthest</a>--%>
+                            <%--                                </li>--%>
+                            <%--                            </ul>--%>
+                            <%--                            <!-- Hidden form -->--%>
+                            <%--                            <form id="duedateSortForm" action="DashboardServlet" method="get" style="display: none;">--%>
+                            <%--                                <input type="hidden" id="duedateSortInput" name="duedateSortInput" value="">--%>
+                            <%--                            </form>--%>
+                            <%--                        </div>--%>
+                        <%@ include file="duedate_dropdown.html" %>
+                    </th>
+                    <th scope="col">Status
+                        <%@ include file="status_dropdown.html" %>
+                    </th>
+                    <th scope="col">Priority
+                        <%@ include file="priority_dropdown.html" %>
+                    </th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
