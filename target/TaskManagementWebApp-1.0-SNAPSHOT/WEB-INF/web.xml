@@ -7,5 +7,8 @@
     <welcome-file-list>
         <welcome-file>loginpage.html</welcome-file>
     </welcome-file-list>
+    <session-config>
+        <session-timeout>60</session-timeout> <!-- 60 minutes -->
+    </session-config>
 
 </web-app>

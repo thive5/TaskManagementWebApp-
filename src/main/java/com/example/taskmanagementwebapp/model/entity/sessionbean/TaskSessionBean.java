@@ -27,7 +27,8 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
         String orderByClause = " ORDER BY t.id";
 
         if (searchKeyword != null && !searchKeyword.isEmpty()) {
-            baseQuery += " AND (t.title LIKE :searchKeyword OR t.description LIKE :searchKeyword)";
+            searchKeyword = searchKeyword.trim();
+            baseQuery += " AND (LOWER(t.title) LIKE :searchKeyword OR LOWER(t.description) LIKE :searchKeyword)";
         }
         if (duedateSortInput != null && !duedateSortInput.isEmpty()) {
             if (duedateSortInput.equals("ASC")) {
@@ -47,7 +48,7 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
         q = entityManager.createQuery(fullQuery, Todotask.class);
         q.setParameter("userId", userId);
         if (searchKeyword != null && !searchKeyword.isEmpty()) {
-            q.setParameter("searchKeyword", "%" + searchKeyword + "%");
+            q.setParameter("searchKeyword", "%" + searchKeyword.toLowerCase() + "%");
         }
         if (statusInput != null && !statusInput.isEmpty()) {
             q.setParameter("statusInput", statusInput);
@@ -64,9 +65,31 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
     }
 
     @Override
-    public int getTaskCountForUser(int userId) {
-        Query q = entityManager.createQuery("SELECT COUNT(t) FROM Todotask t WHERE t.userid.id = :userId");
+    public int getTaskCountForUser(int userId ,String searchKeyword, String duedateSortInput, String statusInput, String priorityInput) {
+        Query q = null;
+        String baseCount="SELECT COUNT(t) FROM Todotask t WHERE t.userid.id =:userId";
+        // If there's a search keyword, add a condition for it
+        if (searchKeyword != null && !searchKeyword.isEmpty()) {
+            baseCount += " AND(t.title LIKE :searchKeyword OR t.description LIKE :searchKeyword)";
+        }
+        if (statusInput != null && !statusInput.isEmpty()) {
+            baseCount += " AND t.status = :statusInput";
+        }
+        if (priorityInput != null && !priorityInput.isEmpty()) {
+            baseCount += " AND t.priority = :priorityInput";
+        }
+        String fullbaseCount = baseCount;
+        q = entityManager.createQuery(fullbaseCount, Long.class);
         q.setParameter("userId", userId);
+        if (searchKeyword != null && !searchKeyword.isEmpty()) {
+            q.setParameter("searchKeyword", "%" + searchKeyword + "%");
+        }
+        if (statusInput != null && !statusInput.isEmpty()) {
+            q.setParameter("statusInput", statusInput);
+        }
+        if (priorityInput != null && !priorityInput.isEmpty()) {
+            q.setParameter("priorityInput", priorityInput);
+        }
         return ((Long) q.getSingleResult()).intValue();
     }
 

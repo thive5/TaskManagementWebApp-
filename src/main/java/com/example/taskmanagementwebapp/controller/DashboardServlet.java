@@ -50,7 +50,7 @@ public class DashboardServlet extends HttpServlet {
 
         try {
             //get total number of task for the user
-            int rows = taskBean.getTaskCountForUser(userId);
+            int rows = taskBean.getTaskCountForUser(userId,searchKeyword,duedateSortInput,statusInput,priorityInput);
             int numOfPages = rows / recordsPerPage;
             if (rows % recordsPerPage > 0) {
                 //if there is a remainder task, add new page

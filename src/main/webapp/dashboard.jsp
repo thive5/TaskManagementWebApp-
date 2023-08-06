@@ -32,14 +32,16 @@
                 }
             %>
         </div>
-        <div class="col-4">
+        <div class="col-4 welcomeMiddle">
             <form class="search-form" action="DashboardServlet" method="get">
-                <input type="text" class="search-input" name="searchKeyword" placeholder="Search tasks...">
-                <button type="submit" class="search-button"><i class="fas fa-search"></i>Search</button>
+                <input type="text" class="search-input" name="searchKeyword" placeholder="   Search tasks...">
+                <button type="submit" class="btn btn-outline-light btn-lg" id="searchBtn"><i class="fas fa-search"></i>   Search</button>
             </form>
         </div>
-        <div class="col-2">
-            <p>Log out button </p>
+        <div class="col-2 welcomeMiddle" >
+            <form action="${pageContext.request.contextPath}/LogoutServlet" method="get">
+                <button type="submit" class="btn btn-danger btn-lg" id="logoutBtn"><i class="fas fa-solid fa-power-off"></i>  Logout</button>
+            </form>
         </div>
     </div>
 </div>
@@ -392,7 +394,7 @@
 </script>
 <script>
     function redirectToDashboard() {
-        window.location.href = 'DashboardServlet';
+        window.location.href = "DashboardServlet";
     }
 </script>
 
