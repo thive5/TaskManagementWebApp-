@@ -15,12 +15,8 @@
 
     <style>
         body {
-            /*display: flex;*/
-            /*justify-content: center;*/
-            /*align-items: center;*/
             overflow: auto;
             height: 100vh;
-
         }
 
         .main-container {
@@ -34,7 +30,6 @@
 
 
         .login-container {
-            /*width: 350px;*/
             width: auto;
             padding: 16px;
             background-color: white;
@@ -94,7 +89,7 @@
 
     <div class="login-container">
         <h2 class="text-center">Login</h2>
-        <form action="login" method="post">
+        <form action="LoginServlet" method="post">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" id="username" name="username" required>

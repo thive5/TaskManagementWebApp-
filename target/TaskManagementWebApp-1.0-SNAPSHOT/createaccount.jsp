@@ -74,7 +74,7 @@
         </div>
     </form>
     <div class="register-link">
-        <a href="loginpage.html">Back to login page!</a>
+        <a href="loginpage.jsp">Back to login page!</a>
     </div>
 </div>
 

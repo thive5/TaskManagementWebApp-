@@ -22,7 +22,6 @@ public class DashboardServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("DashboardServlet doGet called");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         if (user == null) {
@@ -37,16 +36,20 @@ public class DashboardServlet extends HttpServlet {
         String duedateSortInput = request.getParameter("duedateSortInput");
         String statusInput = request.getParameter("statusInput");
         String priorityInput = request.getParameter("priorityInput");
-        logger.info("priorityInput= " + priorityInput);
+
         if (request.getParameter("currentPage") != null) {
             try {
                 //check if the current is page 1 or not, if not 1 pass the current page value
                 currentPage = Integer.parseInt(request.getParameter("currentPage"));
             } catch (NumberFormatException e) {
                 // Handle exception
+                logger.warn("Invalid currentPage value. Using default.");
+            }catch (Exception e) {
+                // Handle other exceptions
+                e.printStackTrace();
+                response.getWriter().write("An error occurred in DashboardServlet.");
             }
         }
-
 
         try {
             //get total number of task for the user
@@ -70,13 +73,11 @@ public class DashboardServlet extends HttpServlet {
                         request.setAttribute(field + "Error", error);
                         // Remove the attribute from the session to avoid it being persisted across requests
                         session.removeAttribute(field + "Error");
-                        logger.info("Removed Error attribute: " + field);
                     }
                 }
                 // Remove the emptyFields list from the session
                 session.removeAttribute("emptyFields");
             }
-
 
             String[] attributeNames = {"id", "title", "description", "duedate", "status", "priority", "hasErrors", "currentAction"};
 
@@ -85,7 +86,6 @@ public class DashboardServlet extends HttpServlet {
                 if (attributeValue != null) {
                     request.setAttribute(attributeName, attributeValue);
                     session.removeAttribute(attributeName);
-                    logger.info("Removed session attribute: " + attributeName);
                 }
             }
 

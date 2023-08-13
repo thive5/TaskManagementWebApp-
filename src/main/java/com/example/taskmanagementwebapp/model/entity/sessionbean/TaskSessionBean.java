@@ -57,7 +57,6 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
             q.setParameter("priorityInput", priorityInput);
         }
 
-
         q.setMaxResults(maxResults);
         q.setFirstResult(firstResult);
         List<Todotask> resultList = q.getResultList();
@@ -65,9 +64,9 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
     }
 
     @Override
-    public int getTaskCountForUser(int userId ,String searchKeyword, String duedateSortInput, String statusInput, String priorityInput) {
+    public int getTaskCountForUser(int userId, String searchKeyword, String duedateSortInput, String statusInput, String priorityInput) throws EJBException {
         Query q = null;
-        String baseCount="SELECT COUNT(t) FROM Todotask t WHERE t.userid.id =:userId";
+        String baseCount = "SELECT COUNT(t) FROM Todotask t WHERE t.userid.id =:userId";
         // If there's a search keyword, add a condition for it
         if (searchKeyword != null && !searchKeyword.isEmpty()) {
             baseCount += " AND(t.title LIKE :searchKeyword OR t.description LIKE :searchKeyword)";
@@ -95,18 +94,18 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
 
 
     @Override
-    public void createTask(Todotask task) {
+    public void createTask(Todotask task) throws EJBException {
         entityManager.persist(task);
     }
 
     @Override
-    public void updateTask(Todotask task) {
+    public void updateTask(Todotask task) throws EJBException {
         entityManager.merge(task);
         entityManager.flush();
     }
 
     @Override
-    public void deleteTask(int id) {
+    public void deleteTask(int id) throws EJBException {
         // Find the task entity with the given ID
         Todotask task = entityManager.find(Todotask.class, id);
         // If the task exists, remove it
@@ -114,8 +113,9 @@ public class TaskSessionBean implements TaskSessionBeanLocal {
             entityManager.remove(task);
         }
     }
+
     @Override
-    public void completeTask(int taskId, String completedStatus) {
+    public void completeTask(int taskId, String completedStatus) throws EJBException {
         // Get the task from the database
         Todotask task = entityManager.find(Todotask.class, taskId);
         if (task != null) {

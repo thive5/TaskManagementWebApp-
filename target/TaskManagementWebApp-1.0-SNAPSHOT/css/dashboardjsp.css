@@ -6,7 +6,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /*height: 6vh; !* Adjust this value as needed *!*/
     text-align: center;
     padding: 20px;
 }
@@ -35,7 +34,6 @@ body {
 #logoutBtn {
     border-radius: 45px;
     margin-bottom: 5px;
-    /*margin-top: 10px;*/
 }
 
 #resetBtn {
@@ -49,7 +47,6 @@ body {
 #main-container {
     color: whitesmoke;
     font-size: 30px;
-    /*padding: 20px;*/
 }
 
 .status-pending,
@@ -59,7 +56,6 @@ body {
 .priority-low {
     padding: 5px 5px; /* Adjust as needed */
     border-radius: 5px; /* Adjust as needed */
-    /* background-color: #808080 ;  Light grey */
     color: black;
     font-weight: bold;
 }
@@ -87,8 +83,6 @@ body {
 .pagination a {
     color: whitesmoke;
     background: black;
-    /*border: 1px #343a40;*/
-
 }
 
 .pagination a:hover {

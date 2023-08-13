@@ -10,8 +10,8 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "login", value = "/login")
-public class login extends HttpServlet {
+@WebServlet(name = "LoginServlet", value = "/LoginServlet")
+public class LoginServlet extends HttpServlet {
     @EJB
     private UserSessionBeanLocal userBean;
 
@@ -22,7 +22,6 @@ public class login extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("doPost method called");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 

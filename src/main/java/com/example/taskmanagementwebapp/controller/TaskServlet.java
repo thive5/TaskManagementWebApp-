@@ -7,6 +7,7 @@ import com.example.taskmanagementwebapp.utilities.FormValidator;
 import org.apache.log4j.Logger;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -104,57 +105,89 @@ public class TaskServlet extends HttpServlet {
     }
 
     private void createTask(HttpServletRequest request, HttpServletResponse response, String title, String description, Date date, String status, String priority, User user) throws ServletException, IOException {
-        // Create the new task
-        Todotask newTask = new Todotask();
-        newTask.setTitle(title);
-        newTask.setDescription(description);
-        newTask.setDuedate(date);
-        newTask.setStatus(status);
-        newTask.setPriority(priority);
-        newTask.setUserid(user);
+        try {
+            // Create the new task
+            Todotask newTask = new Todotask();
+            newTask.setTitle(title);
+            newTask.setDescription(description);
+            newTask.setDuedate(date);
+            newTask.setStatus(status);
+            newTask.setPriority(priority);
+            newTask.setUserid(user);
 
-        // Save the new task
-        taskBean.createTask(newTask);
-
-        // Redirect back to the dashboard
-        response.sendRedirect("DashboardServlet");
+            // Save the new task
+            taskBean.createTask(newTask);
+            // Redirect back to the dashboard
+            response.sendRedirect("DashboardServlet");
+        } catch (EJBException e) {
+            // This will catch database-related exceptions
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while creating the task.");
+        } catch (Exception e) {
+            // This will catch any other exceptions
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
+        }
     }
 
     private void updateTask(HttpServletRequest request, HttpServletResponse response, String title, String description, Date date, String status, String priority, User user) throws ServletException, IOException {
-        // Create a Todotask object and set its fields
-        Todotask updateTask = new Todotask();
-        String idString = request.getParameter("id");
-        if (idString != null && !idString.isEmpty()) {
-            int id = Integer.parseInt(idString);
-            updateTask.setId(id);
-        } else {
-            // handle error: id is required for updates
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id for update");
-            return;
+        try {
+            // Create a Todotask object and set its fields
+            Todotask updateTask = new Todotask();
+            String idString = request.getParameter("id");
+            if (idString != null && !idString.isEmpty()) {
+                int id = Integer.parseInt(idString);
+                updateTask.setId(id);
+            } else {
+                // handle error: id is required for updates
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id for update");
+                return;
+            }
+            updateTask.setTitle(title);
+            updateTask.setDescription(description);
+            updateTask.setDuedate(date);
+            updateTask.setStatus(status);
+            updateTask.setPriority(priority);
+            updateTask.setUserid(user);
+
+            // Call the updateTask method of the TaskSessionBeanLocal instance
+            taskBean.updateTask(updateTask);
+            // Redirect the response to the DashboardServlet
+            response.sendRedirect("DashboardServlet");
+        } catch (EJBException e) {
+            // This will catch database-related exceptions
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while updating the task.");
+        } catch (Exception e) {
+            // This will catch any other exceptions
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
         }
-        updateTask.setTitle(title);
-        updateTask.setDescription(description);
-        updateTask.setDuedate(date);
-        updateTask.setStatus(status);
-        updateTask.setPriority(priority);
-        updateTask.setUserid(user);
-
-        // Call the updateTask method of the TaskSessionBeanLocal instance
-        taskBean.updateTask(updateTask);
-
-        // Redirect the response to the DashboardServlet
-        response.sendRedirect("DashboardServlet");
     }
 
     private void deleteTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String idString = request.getParameter("id");
-        if (idString != null && !idString.isEmpty()) {
-            int id = Integer.parseInt(idString);
-            taskBean.deleteTask(id);
-        } else {
-            // handle error: id is required for updates
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id for update");
+        try {
+            String idString = request.getParameter("id");
+            if (idString != null && !idString.isEmpty()) {
+                int id = Integer.parseInt(idString);
+                taskBean.deleteTask(id);
+            } else {
+                // handle error: id is required for updates
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing id for update");
+            }
+            response.sendRedirect("DashboardServlet");
+        } catch (NumberFormatException e) {
+            // This will catch parsing-related exceptions
+            e.printStackTrace(); // Consider using a logging framework.
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid id format.");
+        } catch (EJBException e) {
+            // This will catch database-related exceptions
+            e.printStackTrace(); // Consider using a logging framework.
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while deleting the task.");
+        } catch (Exception e) {
+            // This will catch any other exceptions
+            e.printStackTrace(); // Consider using a logging framework.
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
         }
-        response.sendRedirect("DashboardServlet");
     }
 }

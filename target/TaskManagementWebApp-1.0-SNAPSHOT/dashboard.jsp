@@ -428,25 +428,6 @@
         window.location.href = "DashboardServlet";
     }
 </script>
-<%--<script>--%>
-<%--    $(document).ready(function() {--%>
-<%--        $('#complete-task').click(function() {--%>
-<%--            var taskId = $(this).data('task-id');--%>
-
-<%--            $.post('${pageContext.request.contextPath}/CompleteServlet', {--%>
-<%--                taskId: taskId,--%>
-<%--                completedStatus: 'completed'--%>
-<%--            }, function(data, status) {--%>
-<%--                if (status === 'success') {--%>
-<%--                    // Here you can add code to handle a successful completion, like updating the UI--%>
-<%--                } else {--%>
-<%--                    console.error('There was an error completing the task');--%>
-<%--                }--%>
-<%--            });--%>
-<%--        });--%>
-<%--    });--%>
-<%--</script>--%>
-
 
 </body>
 </html>

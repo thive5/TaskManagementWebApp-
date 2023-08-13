@@ -7,6 +7,6 @@ import javax.ejb.EJBException;
 public interface UserSessionBeanLocal {
     User findUserByUsername(String username) throws EJBException;
     boolean isUsernameExists(String username);
-    void createUser(String username, String password);
+    void createUser(String username, String password) throws EJBException;
 
 }

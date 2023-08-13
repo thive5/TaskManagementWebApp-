@@ -14,7 +14,7 @@ public class UserSessionBean implements UserSessionBeanLocal {
     @PersistenceContext(unitName = "TaskManagementWebApp")
     EntityManager entityManager;
 
-    public User findUserByUsername(String username) {
+    public User findUserByUsername(String username) throws EJBException {
         TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
         query.setParameter("username", username);
         try {
@@ -33,10 +33,15 @@ public class UserSessionBean implements UserSessionBeanLocal {
     }
 
     @Override
-    public void createUser(String username, String password) {
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setPassword(password);
-        entityManager.persist(newUser);
+    public void createUser(String username, String password) throws EJBException {
+        try {
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.setPassword(password);
+            entityManager.persist(newUser);
+        } catch (Exception e) {
+            // Handle any other exceptions
+            throw new EJBException("An error occurred while creating the user.", e);
+        }
     }
 }

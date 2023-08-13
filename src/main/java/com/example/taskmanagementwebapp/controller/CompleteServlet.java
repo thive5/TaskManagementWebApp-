@@ -15,12 +15,22 @@ public class CompleteServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int taskId = Integer.parseInt(request.getParameter("taskId"));
-        String completedStatus = request.getParameter("completedStatus");
-        // Save the new task
-        taskBean.completeTask(taskId,completedStatus);
-        // Redirect back to the dashboard
-        response.sendRedirect("DashboardServlet");
+        try {
+            int taskId = Integer.parseInt(request.getParameter("taskId"));
+            String completedStatus = request.getParameter("completedStatus");
+            // Save the new task
+            taskBean.completeTask(taskId, completedStatus);
+            // Redirect back to the dashboard
+            response.sendRedirect("DashboardServlet");
+        } catch (NumberFormatException e) {
+            // Handle specific exception for number format
+            e.printStackTrace();
+            response.getWriter().write("Invalid task ID format in CompleteServlet.");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+            response.getWriter().write("An error occurred in CompleteServlet.");
+        }
     }
 
     @Override
