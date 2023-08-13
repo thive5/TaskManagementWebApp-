@@ -1,12 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<%--
+  Created by IntelliJ IDEA.
+  User: thive
+  Date: 8/13/2023
+  Time: 12:05 AM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LoginPage</title>
+    <title>Create New Account</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/106fca075c.js" crossorigin="anonymous"></script>
+
+    <!-- Include the Font Awesome library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <style>
         body {
@@ -17,7 +26,7 @@
             background-color: #f8f9fa;
         }
 
-        .login-container {
+        .createAccount-container {
             width: 350px;
             padding: 16px;
             background-color: white;
@@ -27,17 +36,17 @@
         }
 
         .register-link {
-            text-align: center;
-            margin-top: 20px;
+            text-align: center; /* Center the text */
+            margin-top: 20px; /* Add some space above the link */
         }
 
         .register-link a {
-            color: #007BFF;
-            text-decoration: none;
+            color: #007BFF; /* Bootstrap primary color for the link */
+            text-decoration: none; /* Remove underline */
         }
 
         .register-link a:hover {
-            text-decoration: underline;
+            text-decoration: underline; /* Add underline on hover */
         }
 
         #error {
@@ -45,13 +54,12 @@
             font-size: 1em;
             text-align: center;
         }
-
     </style>
 </head>
 <body>
-<div class="login-container">
-    <h2 class="text-center">Login</h2>
-    <form action="login" method="post">
+<div class="createAccount-container">
+    <h2 class="text-center">Create New Account</h2>
+    <form id="createAccountForm" action="CreateAccountServlet" method="post">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" name="username" required>
@@ -59,18 +67,16 @@
         <div class="form-group">
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" name="password" required>
-            <!--            show incorrect username and password form validation error-->
             <div id="error"></div>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary btn-block mt-3">Login</button>
+            <button type="submit" class="btn btn-primary btn-block mt-3">Create Account</button>
         </div>
     </form>
     <div class="register-link">
-        <p>Don't have an account? <a href="createaccount.jsp">Create New Account</a></p>
+        <a href="loginpage.html">Back to login page!</a>
     </div>
 </div>
-
 
 <script>
     $(document).ready(function () {
@@ -81,6 +87,6 @@
         });
     });
 </script>
-
 </body>
+
 </html>

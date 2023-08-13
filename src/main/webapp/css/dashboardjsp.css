@@ -6,16 +6,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /*height: 6vh; !* Adjust this value as needed *!*/
     text-align: center;
     padding: 20px;
 }
 
-.welcomeMiddle{
+.welcomeMiddle {
     padding: 20px;
 }
 
-#completedForm{
+#completedForm {
     margin: 0px;
 }
 
@@ -26,16 +25,18 @@ body {
     margin-right: 10px; /*!* Add some space around the input and button *!*/
     border-radius: 45px; /* Adjust as needed */
 }
-#searchBtn{
+
+#searchBtn {
     border-radius: 45px;
     margin-bottom: 5px;
 }
-#logoutBtn{
+
+#logoutBtn {
     border-radius: 45px;
     margin-bottom: 5px;
-    /*margin-top: 10px;*/
 }
-#resetBtn{
+
+#resetBtn {
     font-weight: bold;
 }
 
@@ -46,7 +47,6 @@ body {
 #main-container {
     color: whitesmoke;
     font-size: 30px;
-    /*padding: 20px;*/
 }
 
 .status-pending,
@@ -56,7 +56,6 @@ body {
 .priority-low {
     padding: 5px 5px; /* Adjust as needed */
     border-radius: 5px; /* Adjust as needed */
-    /* background-color: #808080 ;  Light grey */
     color: black;
     font-weight: bold;
 }
@@ -84,11 +83,16 @@ body {
 .pagination a {
     color: whitesmoke;
     background: black;
-    /*border: 1px #343a40;*/
-
 }
 
 .pagination a:hover {
     color: whitesmoke; /* Bootstrap's yellow color */
     background: #343a40;
+}
+
+.alert-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

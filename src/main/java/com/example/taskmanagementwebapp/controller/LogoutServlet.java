@@ -13,8 +13,7 @@ public class LogoutServlet extends HttpServlet {
         if (session != null) {
             session.invalidate();
         }
-        response.sendRedirect("loginpage.html");
-
+        response.sendRedirect("loginpage.jsp");
     }
 
     @Override

@@ -19,6 +19,7 @@
 
     <!-- Include the Font Awesome library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 </head>
 <body>
 <div class="container-fluid bg-dark" id="main-container">
@@ -53,7 +54,6 @@
     </div>
 </div>
 <%
-    // Create a Logger instance with a name
     Logger logger = Logger.getLogger("DashboardLogger");
 %>
 
@@ -74,10 +74,16 @@
     </div>
 </div>
 
-<div class="container d-flex justify-content-center border-primary">
+
+<div class="container d-flex flex-column justify-content-center border-primary">
     <c:choose>
         <c:when test="${empty tasksList}">
-            <p>No tasks found.</p>
+            <div class="alert-container">
+                <div class="alert alert-danger text-center">
+                    <h1 style="color: red;">No task saved</h1>
+                    <h3 style="color: black;">Create New Task</h3>
+                </div>
+            </div>
         </c:when>
         <c:otherwise>
             <table class="table table-striped table-hover table-dark m-3">
@@ -106,10 +112,9 @@
                         <td><c:out value="${task.description}"/></td>
                         <td><fmt:formatDate value="${task.duedate}" pattern="yyyy-MM-dd"/></td>
                         <td>
-                                <%--                            <c:out value="${task.status}"/>--%>
+
                             <c:choose>
                                 <c:when test="${task.status == 'pending'}">
-                                    <%--                                    <span class="badge text-bg-light">${task.status}</span>--%>
                                     <span class="status-pending">${task.status}</span>
                                 </c:when>
                                 <c:otherwise>
@@ -118,7 +123,6 @@
                             </c:choose>
                         </td>
                         <td>
-                                <%--                            <c:out value="${task.priority}"/>--%>
                             <c:choose>
                                 <c:when test="${task.priority == 'high'}">
                                     <span class="priority-high">${task.priority}</span>
@@ -127,7 +131,6 @@
                                     <span class="priority-medium">${task.priority}</span>
                                 </c:when>
                                 <c:otherwise>
-                                    <%--                                    <span class="badge text-bg-light">${task.priority}</span>--%>
                                     <span class="priority-low">${task.priority}</span>
                                 </c:otherwise>
                             </c:choose>
@@ -155,51 +158,49 @@
                 </c:forEach>
                 </tbody>
             </table>
+            <%--pagination code--%>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-lg justify-content-center">
+                    <c:if test="${currentPage != 1}">
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="DashboardServlet?currentPage=${currentPage - 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    </c:if>
+                    <c:forEach var="i" begin="1" end="${numOfPages}">
+                        <c:choose>
+                            <c:when test="${i == currentPage}">
+                                <li class="page-item active">
+                                    <a class="page-link"
+                                       href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}">${i}</a>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}">${i}</a>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                    <c:if test="${currentPage != numOfPages}">
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="DashboardServlet?currentPage=${currentPage + 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&priorityInput=${priorityInput}&statusInput=${statusInput}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </c:if>
+                </ul>
+            </nav>
         </c:otherwise>
     </c:choose>
 </div>
 
-<%--pagination code--%>
-<div class="container d-flex justify-content-center border-primary">
-    <nav aria-label="Page navigation">
-        <ul class="pagination pagination-lg justify-content-center">
-            <c:if test="${currentPage != 1}">
-                <li class="page-item">
-                    <a class="page-link"
-                       href="DashboardServlet?currentPage=${currentPage - 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}"
-                       aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            </c:if>
-            <c:forEach var="i" begin="1" end="${numOfPages}">
-                <c:choose>
-                    <c:when test="${i == currentPage}">
-                        <li class="page-item active">
-                            <a class="page-link"
-                               href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}">${i}</a>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}">${i}</a>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-            <c:if test="${currentPage != numOfPages}">
-                <li class="page-item">
-                    <a class="page-link"
-                       href="DashboardServlet?currentPage=${currentPage + 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&priorityInput=${priorityInput}&statusInput=${statusInput}"
-                       aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </c:if>
-        </ul>
-    </nav>
-</div>
 
 <!-- Create Task Modal -->
 <div class="modal fade" id="createTaskModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -214,7 +215,6 @@
             <div class="modal-body">
                 <form id="createTaskForm" action="TaskServlet" method="post">
                     <input type="hidden" name="action" value="create">
-                    <%--                    <input type="hidden" id="createTaskId" name="id">--%>
                     <div class="mb-3">
                         <div class="form-group">
                             <label for="title" class="form-label">Title</label>

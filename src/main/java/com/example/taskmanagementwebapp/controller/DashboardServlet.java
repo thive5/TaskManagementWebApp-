@@ -27,7 +27,7 @@ public class DashboardServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             logger.warn("DashboardServlet cannot get current user");
-            response.sendRedirect("loginpage.html");
+            response.sendRedirect("loginpage.jsp");
             return;
         }
         int userId = user.getId();
@@ -37,7 +37,7 @@ public class DashboardServlet extends HttpServlet {
         String duedateSortInput = request.getParameter("duedateSortInput");
         String statusInput = request.getParameter("statusInput");
         String priorityInput = request.getParameter("priorityInput");
-        logger.info("priorityInput= "+priorityInput);
+        logger.info("priorityInput= " + priorityInput);
         if (request.getParameter("currentPage") != null) {
             try {
                 //check if the current is page 1 or not, if not 1 pass the current page value
@@ -50,7 +50,7 @@ public class DashboardServlet extends HttpServlet {
 
         try {
             //get total number of task for the user
-            int rows = taskBean.getTaskCountForUser(userId,searchKeyword,duedateSortInput,statusInput,priorityInput);
+            int rows = taskBean.getTaskCountForUser(userId, searchKeyword, duedateSortInput, statusInput, priorityInput);
             int numOfPages = rows / recordsPerPage;
             if (rows % recordsPerPage > 0) {
                 //if there is a remainder task, add new page
@@ -78,7 +78,7 @@ public class DashboardServlet extends HttpServlet {
             }
 
 
-            String[] attributeNames = {"id","title", "description", "duedate", "status", "priority", "hasErrors", "currentAction"};
+            String[] attributeNames = {"id", "title", "description", "duedate", "status", "priority", "hasErrors", "currentAction"};
 
             for (String attributeName : attributeNames) {
                 Object attributeValue = session.getAttribute(attributeName);
@@ -89,7 +89,7 @@ public class DashboardServlet extends HttpServlet {
                 }
             }
 
-            List<Todotask> tasksList = taskBean.getTaskByUser(userId, recordsPerPage, (currentPage - 1) * recordsPerPage, searchKeyword,duedateSortInput,statusInput,priorityInput);
+            List<Todotask> tasksList = taskBean.getTaskByUser(userId, recordsPerPage, (currentPage - 1) * recordsPerPage, searchKeyword, duedateSortInput, statusInput, priorityInput);
             request.setAttribute("numOfPages", numOfPages);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("recordsPerPage", recordsPerPage);

@@ -58,7 +58,6 @@ public class TaskServlet extends HttpServlet {
             if (!emptyFields.isEmpty()) {
                 // For each empty field, add an error attribute to the request
                 for (String field : emptyFields) {
-                    //request.setAttribute(field + "Error", "");
                     session.setAttribute(field + "Error", "");
                 }
                 // Add the emptyFields list to the session
@@ -69,28 +68,14 @@ public class TaskServlet extends HttpServlet {
                     int id = Integer.parseInt(idString);
                     session.setAttribute("id", id);
                 }
-                //request.setAttribute("title", title);
                 session.setAttribute("title", title);
-                //request.setAttribute("description", description);
                 session.setAttribute("description", description);
-                //request.setAttribute("duedate", duedate);
                 session.setAttribute("duedate", duedate);
-                //request.setAttribute("status", status);
                 session.setAttribute("status", status);
-                //request.setAttribute("priority", priority);
                 session.setAttribute("priority", priority);
-                // Get the user's tasks and add them to the request attributes //needed to re-render the table
-                //List<Todotask> tasksList = taskBean.getTaskByUser(userId, Integer.MAX_VALUE, 0, "");
-                //request.setAttribute("tasksList", tasksList);
-                // Add a flag to indicate which form field has validation errors
-                //request.setAttribute("hasErrors", true);
                 session.setAttribute("hasErrors", true);
                 // send back the action type
-                //request.setAttribute("currentAction", action);
                 session.setAttribute("currentAction", action);
-                // Forward the request to the dashboard.jsp page to show errors
-                //request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
-                // Forward the request to the DashboardServlet to show errors
                 response.sendRedirect("DashboardServlet");
                 return;
             }

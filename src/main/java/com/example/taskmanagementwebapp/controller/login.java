@@ -38,14 +38,9 @@ public class login extends HttpServlet {
             } else {
                 // Authentication failed, show an error message
                 HttpSession session = request.getSession();
-//                if (user == null) {
-//                    session.setAttribute("errorMessage", "User does not exist");
-//                } else {
-//                    session.setAttribute("errorMessage", "Incorrect password");
-//                }
                 session.setAttribute("errorMessage", "Username or password is incorrect");
                 // Redirect back to the login page
-                response.sendRedirect("loginpage.html");
+                response.sendRedirect("loginpage.jsp");
             }
 
         } catch (EJBException ex) {
@@ -53,7 +48,7 @@ public class login extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("errorMessage", "Username or password is incorrect");
             // Redirect back to the login page
-            response.sendRedirect("loginpage.html");
+            response.sendRedirect("loginpage.jsp");
         }
     }
 }

@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Stateless
 public class UserSessionBean implements UserSessionBeanLocal {
@@ -21,5 +22,21 @@ public class UserSessionBean implements UserSessionBeanLocal {
         } catch (Exception ex) {
             throw new EJBException("Problem finding user by username", ex);
         }
+    }
+
+    @Override
+    public boolean isUsernameExists(String username) {
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
+        query.setParameter("username", username);
+        List<User> users = query.getResultList();
+        return !users.isEmpty();
+    }
+
+    @Override
+    public void createUser(String username, String password) {
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(password);
+        entityManager.persist(newUser);
     }
 }

@@ -5,7 +5,7 @@
          version="4.0">
 
     <welcome-file-list>
-        <welcome-file>loginpage.html</welcome-file>
+        <welcome-file>loginpage.jsp</welcome-file>
     </welcome-file-list>
     <session-config>
         <session-timeout>60</session-timeout> <!-- 60 minutes -->
