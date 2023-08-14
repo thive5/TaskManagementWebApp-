@@ -31,12 +31,6 @@ public class DashboardServlet extends HttpServlet {
         }
         int userId = user.getId();
         int currentPage = 1; //user would be shown page is 1 by default
-        int recordsPerPage = 10;// default recordsPerPage is 10
-        String searchKeyword = request.getParameter("searchKeyword");//search keyword
-        String duedateSortInput = request.getParameter("duedateSortInput");
-        String statusInput = request.getParameter("statusInput");
-        String priorityInput = request.getParameter("priorityInput");
-
         if (request.getParameter("currentPage") != null) {
             try {
                 //check if the current is page 1 or not, if not 1 pass the current page value
@@ -44,12 +38,30 @@ public class DashboardServlet extends HttpServlet {
             } catch (NumberFormatException e) {
                 // Handle exception
                 logger.warn("Invalid currentPage value. Using default.");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 // Handle other exceptions
                 e.printStackTrace();
                 response.getWriter().write("An error occurred in DashboardServlet.");
             }
         }
+        int recordsPerPage = 10;// default recordsPerPage is 10
+        String searchKeyword = request.getParameter("searchKeyword");//search keyword
+        if (searchKeyword == null || searchKeyword.isEmpty()) {
+            searchKeyword = ""; // or some default value
+        }
+        String duedateSortInput = request.getParameter("duedateSortInput");
+        if (duedateSortInput == null || duedateSortInput.isEmpty()) {
+            duedateSortInput = ""; // or some default value
+        }
+        String statusInput = request.getParameter("statusInput");
+        if (statusInput == null || statusInput.isEmpty()) {
+            statusInput = ""; // or some default value
+        }
+        String priorityInput = request.getParameter("priorityInput");
+        if (priorityInput == null || priorityInput.isEmpty()) {
+            priorityInput = ""; // or some default value
+        }
+        String newStatusInput = statusInput;
 
         try {
             //get total number of task for the user
@@ -93,10 +105,26 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("numOfPages", numOfPages);
             request.setAttribute("currentPage", currentPage);
             request.setAttribute("recordsPerPage", recordsPerPage);
+            // Check if the tasksList is empty and if a searchKeyword was provided
+            if (tasksList.isEmpty() && (searchKeyword != null && !searchKeyword.trim().isEmpty())) {
+                request.setAttribute("searchError", "The task you are searching doesn't exist.");
+            }
             request.setAttribute("searchKeyword", searchKeyword);
             request.setAttribute("duedateSortInput", duedateSortInput);
             request.setAttribute("statusInput", statusInput);
+            if (tasksList.isEmpty() && (statusInput != null && !statusInput.trim().isEmpty())) {
+                if ("completed".equals(newStatusInput)) {
+                    request.setAttribute("searchError", "No task has been completed");
+                } else if ("pending".equals(newStatusInput)) {
+                    request.setAttribute("searchError", "No task has been pending");
+                } else {
+                    request.setAttribute("searchError", "No task");
+                }
+            }
             request.setAttribute("priorityInput", priorityInput);
+            if (tasksList.isEmpty() && (priorityInput != null && !priorityInput.trim().isEmpty())) {
+                request.setAttribute("searchError", "No task matches this priority");
+            }
             request.setAttribute("tasksList", tasksList);
             RequestDispatcher dispatcher = request.getRequestDispatcher("dashboard.jsp");
             dispatcher.forward(request, response);

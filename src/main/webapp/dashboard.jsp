@@ -3,6 +3,7 @@
 <%@ page import="org.apache.log4j.Logger" %>
 
 <%@ page import="com.example.taskmanagementwebapp.model.entity.User" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -76,132 +77,163 @@
 
 
 <div class="container d-flex flex-column justify-content-center border-primary">
-    <c:choose>
-        <c:when test="${empty tasksList}">
-            <div class="alert-container">
-                <div class="alert alert-danger text-center">
-                    <h1 style="color: red;">No task saved</h1>
-                    <h3 style="color: black;">Create New Task</h3>
-                </div>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <table class="table table-striped table-hover table-dark m-3">
-                <thead class="table-dark">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Due Date
-                        <%@ include file="duedate_dropdown.html" %>
-                    </th>
-                    <th scope="col">Status
-                        <%@ include file="status_dropdown.html" %>
-                    </th>
-                    <th scope="col">Priority
-                        <%@ include file="priority_dropdown.html" %>
-                    </th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="task" items="${tasksList}" varStatus="status">
-                    <tr>
-                        <td>${(currentPage-1)*recordsPerPage + status.count}</td>
-                        <td><c:out value="${task.title}"/></td>
-                        <td><c:out value="${task.description}"/></td>
-                        <td><fmt:formatDate value="${task.duedate}" pattern="yyyy-MM-dd"/></td>
-                        <td>
+    <% String searchError = (String) request.getAttribute("searchError");
+        List<Todotask> tasksList = (List<Todotask>) request.getAttribute("tasksList");
+        if (searchError != null && !searchError.isEmpty()) {
+    %>
+    <div class="alert alert-danger text-center" style="padding: 30px; font-size: 24px; border-radius: 10px;">
+        <%= searchError %>
+    </div>
+    <% } else if (tasksList == null || tasksList.isEmpty()) { %>
+    <div class="alert-container">
+        <div class="alert alert-danger text-center">
+            <h1 style="color: red;">No task saved</h1>
+            <h3 style="color: black;">Create New Task</h3>
+        </div>
+    </div>
+    <% } else { %>
+    <!-- Display the table with tasks -->
+    <table class="table table-striped table-hover table-dark m-3">
+        <thead class="table-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Due Date
+                <%@ include file="duedate_dropdown.html" %>
+            </th>
+            <th scope="col">Status
+                <%@ include file="status_dropdown.html" %>
+            </th>
+            <th scope="col">Priority
+                <%@ include file="priority_dropdown.html" %>
+            </th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+            int currentPage = (Integer) request.getAttribute("currentPage");
+            int recordsPerPage = (Integer) request.getAttribute("recordsPerPage");
+            for (Todotask task : tasksList) {
+        %>
+        <tr>
+            <td><%= (currentPage - 1) * recordsPerPage + tasksList.indexOf(task) + 1 %>
+            </td>
+            <td><%= task.getTitle() %>
+            </td>
+            <td><%= task.getDescription() %>
+            </td>
+            <td><%= new SimpleDateFormat("yyyy-MM-dd").format(task.getDuedate()) %>
+            </td>
+            <td>
+                <%if ("pending".equals(task.getStatus())) {%>
+                <span class="status-pending"><%= task.getStatus() %></span>
+                <%} else {%>
+                <span class="status-completed"><%= task.getStatus() %></span>
+                <%}%>
+            </td>
+            <td>
+                <%
+                    if ("high".equals(task.getPriority())) {
+                %>
+                <span class="priority-high"><%= task.getPriority() %></span>
+                <%
+                } else if ("medium".equals(task.getPriority())) {
+                %>
+                <span class="priority-medium"><%= task.getPriority() %></span>
+                <%
+                } else {
+                %>
+                <span class="priority-low"><%= task.getPriority() %></span>
+                <%
+                    }
+                %>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary"
+                        onclick="openUpdateTaskModal('<%= task.getId() %>', '<%= task.getTitle()%>', '<%= task.getDescription()%>','<%= new SimpleDateFormat("yyyy-MM-dd").format(task.getDuedate()) %>',  '<%= task.getStatus() %>', '<%= task.getPriority() %>')">
+                    <i class="fa-solid fa-pen fa-xl" style="color: #fcfcfc;"></i>
+                    Update
+                </button>
+                <button type="button" class="btn btn-danger" onclick="openDeleteTaskModal(<%= task.getId() %>)"><i
+                        class="fa-solid fa-trash fa-xl" style="color: #000000;"></i>
+                    Remove
+                </button>
+                <form action="${pageContext.request.contextPath}/CompleteServlet" method="get"
+                      id="completedForm" style="display: inline;">
+                    <input type="hidden" name="taskId" value="<%= task.getId() %>"/>
+                    <input type="hidden" name="completedStatus" value="completed"/>
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-circle-check fa-xl"
+                                                                     style="color: #00FF00;"></i> Completed
+                    </button>
+                </form>
+            </td>
+        </tr>
+        <%
+            }
+        %>
+        </tbody>
+    </table>
+    <%--pagination code--%>
+    <nav aria-label="Page navigation">
+        <ul class="pagination pagination-lg justify-content-center">
+            <%
+                String searchKeyword = (String) request.getAttribute("searchKeyword");
+                String duedateSortInput = (String) request.getAttribute("duedateSortInput");
+                String statusInput = (String) request.getAttribute("statusInput");
+                String priorityInput = (String) request.getAttribute("priorityInput");
+                int numOfPages = (Integer) request.getAttribute("numOfPages");
 
-                            <c:choose>
-                                <c:when test="${task.status == 'pending'}">
-                                    <span class="status-pending">${task.status}</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="status-completed">${task.status}</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${task.priority == 'high'}">
-                                    <span class="priority-high">${task.priority}</span>
-                                </c:when>
-                                <c:when test="${task.priority == 'medium'}">
-                                    <span class="priority-medium">${task.priority}</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="priority-low">${task.priority}</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-primary"
-                                    onclick="openUpdateTaskModal(${task.id}, '${task.title}', '${task.description}', '${task.duedate}', '${task.status}', '${task.priority}')">
-                                <i class="fa-solid fa-pen fa-xl" style="color: #fcfcfc;"></i>
-                                Update
-                            </button>
-                            <button type="button" class="btn btn-danger" onclick="openDeleteTaskModal(${task.id})"><i
-                                    class="fa-solid fa-trash fa-xl" style="color: #000000;"></i>
-                                Remove
-                            </button>
-                            <form action="${pageContext.request.contextPath}/CompleteServlet" method="get"
-                                  id="completedForm" style="display: inline;">
-                                <input type="hidden" name="taskId" value="${task.id}"/>
-                                <input type="hidden" name="completedStatus" value="completed"/>
-                                <button type="submit" class="btn btn-success"><i class="fa-solid fa-circle-check fa-xl"
-                                                                                 style="color: #00FF00;"></i> Completed
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-            <%--pagination code--%>
-            <nav aria-label="Page navigation">
-                <ul class="pagination pagination-lg justify-content-center">
-                    <c:if test="${currentPage != 1}">
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="DashboardServlet?currentPage=${currentPage - 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}"
-                               aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    </c:if>
-                    <c:forEach var="i" begin="1" end="${numOfPages}">
-                        <c:choose>
-                            <c:when test="${i == currentPage}">
-                                <li class="page-item active">
-                                    <a class="page-link"
-                                       href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}">${i}</a>
-                                </li>
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="DashboardServlet?currentPage=${i}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&statusInput=${statusInput}&priorityInput=${priorityInput}">${i}</a>
-                                </li>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                    <c:if test="${currentPage != numOfPages}">
-                        <li class="page-item">
-                            <a class="page-link"
-                               href="DashboardServlet?currentPage=${currentPage + 1}&searchKeyword=${searchKeyword}&duedateSortInput=${duedateSortInput}&priorityInput=${priorityInput}&statusInput=${statusInput}"
-                               aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </c:if>
-                </ul>
-            </nav>
-        </c:otherwise>
-    </c:choose>
+                if (currentPage != 1) {
+            %>
+            <li class="page-item">
+                <a class="page-link"
+                   href="DashboardServlet?currentPage=<%= currentPage - 1 %>&searchKeyword=<%= searchKeyword %>&duedateSortInput=<%= duedateSortInput %>&statusInput=<%= statusInput %>&priorityInput=<%= priorityInput %>"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <%
+                }
+                for (int i = 1; i <= numOfPages; i++) {
+                    if (i == currentPage) {
+            %>
+            <li class="page-item active">
+                <a class="page-link"
+                   href="DashboardServlet?currentPage=<%= i %>&searchKeyword=<%= searchKeyword %>&duedateSortInput=<%= duedateSortInput %>&statusInput=<%= statusInput %>&priorityInput=<%= priorityInput %>"><%= i %>
+                </a>
+            </li>
+            <%
+            } else {
+            %>
+            <li class="page-item">
+                <a class="page-link"
+                   href="DashboardServlet?currentPage=<%= i %>&searchKeyword=<%= searchKeyword %>&duedateSortInput=<%= duedateSortInput %>&statusInput=<%= statusInput %>&priorityInput=<%= priorityInput %>"><%= i %>
+                </a>
+            </li>
+            <%
+                    }
+                }
+                if (currentPage != numOfPages) {
+            %>
+            <li class="page-item">
+                <a class="page-link"
+                   href="DashboardServlet?currentPage=<%= currentPage + 1 %>&searchKeyword=<%= searchKeyword %>&duedateSortInput=<%= duedateSortInput %>&priorityInput=<%= priorityInput %>&statusInput=<%= statusInput %>"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <%
+                }
+            %>
+        </ul>
+    </nav>
+    <% } %>
 </div>
 
-
+<% int currentPage = (Integer) request.getAttribute("currentPage"); %>
+<input type="hidden" id="currentPage" value="<%= currentPage %>"/>
 <!-- Create Task Modal -->
 <div class="modal fade" id="createTaskModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
      aria-labelledby="createTaskModalLabel" aria-hidden="true">
@@ -209,8 +241,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="createTaskModalLabel">Create Task</h5>
-                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet';"
-                        aria-label="Close"></button>
+                <%--                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet?currentPage='+ currentPage;"--%>
+                <%--                        aria-label="Close"></button>--%>
+                <button type="button" class="btn-close" onclick="closeModalAndRedirect();" aria-label="Close"></button>
+
             </div>
             <div class="modal-body">
                 <form id="createTaskForm" action="TaskServlet" method="post">
@@ -279,11 +313,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="updateTaskModalLabel">Update Task</h5>
-                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet';"
-                        aria-label="Close"></button>
+                <%--                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet?currentPage='+ currentPage;"--%>
+                <%--                        aria-label="Close"></button>--%>
+                <button type="button" class="btn-close" onclick="closeModalAndRedirect();" aria-label="Close"></button>
+
             </div>
             <div class="modal-body">
                 <form id="updateTaskForm" action="TaskServlet" method="post">
+
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" id="updateTaskId" name="id">
                     <div class="mb-3">
@@ -357,8 +394,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteTaskModalLabel">Confirm Delete</h5>
-                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet';"
-                        aria-label="Close"></button>
+                <%--                <button type="button" class="btn-close" onclick="window.location.href = 'DashboardServlet?currentPage='+ currentPage;"--%>
+                <%--                        aria-label="Close"></button>--%>
+                <button type="button" class="btn-close" onclick="closeModalAndRedirect();" aria-label="Close"></button>
+
             </div>
             <div class="modal-body">
                 Are you sure you want to delete this task?
@@ -423,11 +462,18 @@
         }
     }
 </script>
+
 <script>
-    function redirectToDashboard() {
-        window.location.href = "DashboardServlet";
+    function closeModalAndRedirect() {
+        // setTimeout(function() {
+        //     let currentPage = document.getElementById('currentPage').value;
+        //     window.location.href = 'DashboardServlet?currentPage=' + currentPage;
+        // }, 500);
+        let currentPage = document.getElementById('currentPage').value;
+        window.location.href = 'DashboardServlet?currentPage=' + currentPage;
     }
 </script>
+
 
 </body>
 </html>

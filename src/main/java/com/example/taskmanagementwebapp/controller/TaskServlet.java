@@ -77,6 +77,7 @@ public class TaskServlet extends HttpServlet {
                 session.setAttribute("hasErrors", true);
                 // send back the action type
                 session.setAttribute("currentAction", action);
+
                 response.sendRedirect("DashboardServlet");
                 return;
             }
